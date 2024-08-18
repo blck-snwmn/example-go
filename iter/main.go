@@ -3,9 +3,33 @@ package main
 import (
 	"fmt"
 	"iter"
+	"slices"
+
+	"maps"
 )
 
 func main() {
+	// maps/slices
+	m := map[string]int{"a": 1, "b": 2, "c": 3, "d": 4, "e": 5}
+
+	// The order of the keys is undefined
+	for k, v := range m {
+		fmt.Printf("map: %v: %v\n", k, v)
+	}
+
+	// The order of the keys is undefined
+	keys := maps.Keys(m)
+	for k := range keys {
+		fmt.Printf("maps.Keys: %v: %v\n", k, m[k])
+	}
+
+	// The order of the keys is sorted.
+	sorted := slices.Sorted(keys)
+	for _, k := range sorted {
+		fmt.Printf("slices.Sorted: %v: %v\n", k, m[k])
+	}
+
+	// implement my iter
 	numbers := generate(100)
 
 	odd := filter(numbers, func(i int) bool { return i%2 == 1 })
