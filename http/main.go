@@ -1,6 +1,9 @@
 package main
 
-import "net/http"
+import (
+	"fmt"
+	"net/http"
+)
 
 func main() {
 	http.HandleFunc("/greet", func(w http.ResponseWriter, r *http.Request) {
@@ -16,5 +19,6 @@ func main() {
 	http.HandleFunc("GET /wild/{path...}", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(r.PathValue("path")))
 	})
+	fmt.Println("Server is running on port 8080")
 	http.ListenAndServe(":8080", nil)
 }
