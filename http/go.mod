@@ -1,3 +1,3 @@
-module github.com/blck-snwmn/example-go/http/http
+module github.com/blck-snwmn/example-go/http
 
 go 1.22.0
