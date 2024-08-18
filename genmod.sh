@@ -20,6 +20,6 @@ CURRENT_PATH=$(pwd)
 GITHUB_PATH=$(echo $CURRENT_PATH | sed -n 's/.*\(github\.com.*\)/\1/p')
 
 # go mod init コマンドを実行
-go mod init $GITHUB_PATH/$DIR_NAME
+go mod init $GITHUB_PATH
 
 go work use .
