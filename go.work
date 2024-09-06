@@ -1,8 +1,8 @@
 go 1.23.0
 
 use (
-	./generics
-	./http
-	./iter
-	./unique
+	./standard/generics
+	./standard/http
+	./standard/iter
+	./standard/unique
 )
