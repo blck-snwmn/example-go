@@ -21,9 +21,9 @@ var q *db.Queries
 func TestMain(m *testing.M) {
 	ctx := context.Background()
 
-	mysqlContainer, err := mysql.RunContainer(
+	mysqlContainer, err := mysql.Run(
 		ctx,
-		testcontainers.WithImage("mysql:5.7"),
+		"mysql:5.7",
 		testcontainers.WithEnv(map[string]string{
 			"MYSQL_ROOT": "secret",
 		}),
