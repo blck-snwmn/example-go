@@ -1,7 +1,8 @@
 package: gen
-output: gen/server.gen.go
+output: gen/api.gen.go
 generate:
   models: true
   chi-server: true
+  client: true
 output-options:
   nullable-type: true

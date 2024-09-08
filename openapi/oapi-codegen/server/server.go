@@ -34,6 +34,32 @@ func NewServer() gen.ServerInterface {
 
 type server struct{}
 
+// GetEmployees implements gen.ServerInterface.
+func (s *server) GetEmployees(w http.ResponseWriter, r *http.Request, employeeId string) {
+	switch employeeId {
+	case "1":
+		w.WriteHeader(http.StatusOK)
+		_ = json.NewEncoder(w).Encode(gen.Manager{
+			Department: "Engineering",
+			Email:      "em@example.com",
+			Id:         "1",
+			Name:       "Alice",
+			Teams:      []string{"team1", "team2"},
+		})
+	case "2":
+		w.WriteHeader(http.StatusOK)
+		_ = json.NewEncoder(w).Encode(gen.Member{
+			Department: "Sales",
+			Email:      "sales@example.com",
+			Id:         "2",
+			Name:       "Bob",
+			Team:       "team_sales",
+		})
+	default:
+		w.WriteHeader(http.StatusNotFound)
+	}
+}
+
 // GetUserById implements ServerInterface.
 func (s *server) GetUserById(w http.ResponseWriter, r *http.Request, userId string) {
 	user, ok := users[userId]
