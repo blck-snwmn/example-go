@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"testing"
 
@@ -18,14 +17,13 @@ import (
 )
 
 func TestMain(m *testing.M) {
-	err := prepare()
+	err := testMain(m)
 	if err != nil {
 		log.Fatalf("Could not prepare: %s", err)
 	}
-	m.Run()
 }
 
-func prepare() error {
+func testMain(m *testing.M) error {
 	ctx := context.Background()
 
 	mysqlContainer, err := mysql.Run(
@@ -54,13 +52,15 @@ func prepare() error {
 	}
 	txdb.Register("txdb", "mysql", connStr)
 
+	m.Run()
+
 	return nil
 }
 
 type User struct {
 	ID   string
-	Name string
 	Bio  string
+	Name string
 }
 
 func Test_Query(t *testing.T) {
@@ -121,24 +121,17 @@ func Test_Get(t *testing.T) {
 	_, err := sqlxDB.Exec("INSERT INTO users (id, name, bio) VALUES ('5', 'Alice', 'Hello'), ('6', 'Bob', 'World')")
 	assert.NoError(t, err)
 
-	var users []User
-	err = sqlxDB.GetContext(context.Background(), &users, "SELECT * FROM users")
+	var user User
+	err = sqlxDB.GetContext(context.Background(), &user, "SELECT * FROM users")
 	assert.NoError(t, err)
 
-	fmt.Println(users)
-
-	// var user User
-	// err = sqlxDB.GetContext(context.Background(), &user, "SELECT * FROM users")
-	// assert.NoError(t, err)
-
-	// assert.Equal(t, User{ID: "5", Name: "Alice", Bio: "Hello"}, user)
+	assert.Equal(t, User{ID: "5", Name: "Alice", Bio: "Hello"}, user)
 }
 
 func helperDB(t *testing.T) *sqlx.DB {
 	t.Helper()
 
-	sqlxDB, err := sqlx.Open("txdb", uuid.NewString())
-	assert.NoError(t, err)
+	sqlxDB := sqlx.MustOpen("txdb", uuid.NewString())
 
 	t.Cleanup(func() {
 		sqlxDB.Close()
