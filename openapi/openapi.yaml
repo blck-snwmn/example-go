@@ -60,6 +60,11 @@ components:
         age:
           type: integer
           format: int32
+          nullable: true
+      required:
+        - id
+        - name
+        - email
     Users:
       type: array
       items:
