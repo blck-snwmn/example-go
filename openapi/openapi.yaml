@@ -10,6 +10,7 @@ servers:
 paths:
   /v1/users:
     get:
+      description: Get all users
       summary: get users
       operationId: getUsers
       security: []
@@ -26,12 +27,14 @@ paths:
           description: Internal Server Error
   /v1/users/{user_id}:
     get:
+      description: Get user by id
       summary: get user by id
       operationId: getUserById
       security: []
       parameters:
         - name: user_id
           in: path
+          description: ID of user to return
           required: true
           schema:
             type: string

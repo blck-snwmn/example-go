@@ -2,3 +2,6 @@ extends:
   - recommended
 rules:
   no-server-example.com: off
+  operation-description: error
+  parameter-description: error
+  tag-description: error
