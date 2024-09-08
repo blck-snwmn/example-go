@@ -1,0 +1,66 @@
+openapi: 3.0.0
+info:
+  title: Greeting API
+  version: 1.0.0
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+servers:
+  - url: http://example.com
+paths:
+  /v1/users:
+    get:
+      summary: get users
+      operationId: getUsers
+      security: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Users'
+        '400':
+          description: Bad Request
+        '500':
+          description: Internal Server Error
+  /v1/users/{user_id}:
+    get:
+      summary: get user by id
+      operationId: getUserById
+      security: []
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        age:
+          type: integer
+          format: int32
+    Users:
+      type: array
+      items:
+        $ref: '#/components/schemas/User'
