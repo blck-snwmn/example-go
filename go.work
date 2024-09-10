@@ -4,6 +4,7 @@ use (
 	./db/sqlc
 	./db/sqlx
 	./openapi/oapi-codegen
+	./openapi/oapi-codegen-strict
 	./standard/generics
 	./standard/http
 	./standard/iter
