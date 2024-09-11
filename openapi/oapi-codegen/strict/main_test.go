@@ -6,8 +6,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/blck-snwmn/example-go/openapi/oapi-codegen-strict/gen"
-	"github.com/blck-snwmn/example-go/openapi/oapi-codegen-strict/server"
+	"github.com/blck-snwmn/example-go/openapi/oapi-codegen/strict/gen"
+	"github.com/blck-snwmn/example-go/openapi/oapi-codegen/strict/server"
 	"github.com/go-chi/chi/v5"
 )
 

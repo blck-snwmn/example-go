@@ -1,5 +1,5 @@
 package: gen
-output: gen/api.gen.go
+output: strict/gen/api.gen.go
 generate:
   models: true
   chi-server: true
