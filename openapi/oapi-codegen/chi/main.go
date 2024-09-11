@@ -4,8 +4,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/blck-snwmn/example-go/openapi/oapi-codegen/gen"
-	"github.com/blck-snwmn/example-go/openapi/oapi-codegen/server"
+	"github.com/blck-snwmn/example-go/openapi/oapi-codegen/chi/gen"
+	"github.com/blck-snwmn/example-go/openapi/oapi-codegen/chi/server"
 	"github.com/go-chi/chi/v5"
 )
 

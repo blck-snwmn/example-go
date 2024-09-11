@@ -7,7 +7,7 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/blck-snwmn/example-go/openapi/oapi-codegen/gen"
+	"github.com/blck-snwmn/example-go/openapi/oapi-codegen/chi/gen"
 	"github.com/oapi-codegen/nullable"
 )
 
