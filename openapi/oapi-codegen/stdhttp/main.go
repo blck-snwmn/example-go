@@ -9,7 +9,8 @@ import (
 )
 
 func main() {
-	srv := server.NewServer()
+	repository := server.NewUserRepository()
+	srv := server.NewServer(repository)
 
 	r := http.NewServeMux()
 

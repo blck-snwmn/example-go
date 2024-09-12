@@ -1,11 +1,8 @@
 package server
 
 import (
-	"cmp"
 	"encoding/json"
 	"net/http"
-	"slices"
-	"strings"
 
 	"github.com/blck-snwmn/example-go/openapi/oapi-codegen/stdhttp/gen"
 	"github.com/oapi-codegen/nullable"
@@ -15,24 +12,43 @@ func ptr[T any](v T) *T {
 	return &v
 }
 
-type user struct {
-	ID    string
-	Name  string
-	Email string
-	Age   *int32
+func NewServer(repository *UserRepository) gen.ServerInterface {
+	return &server{
+		repository: repository,
+	}
 }
 
-var users = map[string]user{
-	"1": {ID: "1", Name: "Alice", Email: "alice@example.com", Age: ptr[int32](30)},
-	"2": {ID: "2", Name: "Bob", Email: "bob@example.com", Age: ptr[int32](40)},
-	"3": {ID: "3", Name: "Charlie", Email: "charlie@example.com", Age: ptr[int32](50)},
+type server struct {
+	repository *UserRepository
 }
 
-func NewServer() gen.ServerInterface {
-	return &server{}
-}
+// CreateUser implements gen.ServerInterface.
+func (s *server) CreateUser(w http.ResponseWriter, r *http.Request) {
+	var u gen.User
+	if err := json.NewDecoder(r.Body).Decode(&u); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 
-type server struct{}
+	if _, err := s.repository.GetUserById(u.Id); err == nil {
+		w.WriteHeader(http.StatusConflict)
+		return
+	}
+
+	var age *int32
+	tmp, err := u.Age.Get()
+	if err == nil {
+		age = ptr(tmp)
+	}
+	s.repository.AddUser(user{
+		ID:    u.Id,
+		Name:  u.Name,
+		Email: u.Email,
+		Age:   age,
+	})
+
+	w.WriteHeader(http.StatusCreated)
+}
 
 // GetEmployees implements gen.ServerInterface.
 func (s *server) GetEmployees(w http.ResponseWriter, r *http.Request, employeeId string) {
@@ -62,39 +78,41 @@ func (s *server) GetEmployees(w http.ResponseWriter, r *http.Request, employeeId
 
 // GetUserById implements gen.ServerInterface.
 func (s *server) GetUserById(w http.ResponseWriter, r *http.Request, userId string) {
-	user, ok := users[userId]
-	if !ok {
+	u, err := s.repository.GetUserById(userId)
+	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
-	result := gen.User{
-		Id:    user.ID,
-		Name:  user.Name,
-		Email: user.Email,
-		Age:   nullable.NewNullableWithValue(*user.Age),
-	}
-
 	w.WriteHeader(http.StatusOK)
-	_ = json.NewEncoder(w).Encode(result)
+	age := nullable.NewNullNullable[int32]()
+	if u.Age != nil {
+		age.Set(*u.Age)
+	}
+	_ = json.NewEncoder(w).Encode(gen.User{
+		Id:    u.ID,
+		Name:  u.Name,
+		Email: u.Email,
+		Age:   age,
+	})
 }
 
 // GetUsers implements gen.ServerInterface.
 func (s *server) GetUsers(w http.ResponseWriter, r *http.Request) {
+	users := s.repository.ListUsers()
+
 	var result gen.Users
 	for _, user := range users {
+		age := nullable.NewNullNullable[int32]()
+		if user.Age != nil {
+			age.Set(*user.Age)
+		}
 		result = append(result, gen.User{
 			Id:    user.ID,
 			Name:  user.Name,
 			Email: user.Email,
-			Age:   nullable.NewNullableWithValue(*user.Age),
+			Age:   age,
 		})
 	}
-	slices.SortFunc(result, func(a, b gen.User) int {
-		return cmp.Or(
-			strings.Compare(a.Id, b.Id),
-		)
-	})
-
 	w.WriteHeader(http.StatusOK)
 	_ = json.NewEncoder(w).Encode(result)
 }

@@ -25,6 +25,24 @@ paths:
           description: Bad Request
         '500':
           description: Internal Server Error
+    post:
+      description: Create a new user
+      summary: create user
+      operationId: createUser
+      security: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      responses:
+        '201':
+          description: Created
+        '400':
+          description: Bad Request
+        '500':
+          description: Internal Server Error
   /v1/users/{user_id}:
     get:
       description: Get user by id
