@@ -1,4 +1,4 @@
-package template1
+package template
 
 import (
 	"errors"
