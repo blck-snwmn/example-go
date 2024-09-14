@@ -1,12 +1,13 @@
 package sample
 
 import (
-	"errors"
 	"fmt"
+
+	"golang.org/x/xerrors"
 )
 
 func sample() {
-	msg := "something went wrong"
-	err := errors.New("error: " + msg)
+	err := xerrors.New("sample")
+	err = xerrors.Errorf("errors: %w", err)
 	fmt.Println(err)
 }

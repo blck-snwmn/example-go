@@ -1,14 +1,15 @@
 package template
 
 import (
-	"errors"
 	"fmt"
+
+	"golang.org/x/xerrors"
 )
 
-func before(s string) error {
-	return fmt.Errorf("%s", s)
+func before(err error) error {
+	return fmt.Errorf("errors: %w", err)
 }
 
-func after(s string) error {
-	return errors.New(s)
+func after(err error) error {
+	return xerrors.Errorf("errors: %w", err)
 }
