@@ -3,6 +3,7 @@ go 1.23.1
 use (
 	./db/sqlc
 	./db/sqlx
+	./openapi/mix
 	./openapi/oapi-codegen
 	./openapi/ogen
 	./standard/generics

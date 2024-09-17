@@ -1,0 +1,5 @@
+
+## Generate
+```bash
+$ go generate ./...
+```
