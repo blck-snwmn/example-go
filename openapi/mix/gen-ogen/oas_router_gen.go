@@ -49,27 +49,36 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 		switch elem[0] {
-		case '/': // Prefix: "/v1/"
+		case '/': // Prefix: "/v1/users"
 			origElem := elem
-			if l := len("/v1/"); len(elem) >= l && elem[0:l] == "/v1/" {
+			if l := len("/v1/users"); len(elem) >= l && elem[0:l] == "/v1/users" {
 				elem = elem[l:]
 			} else {
 				break
 			}
 
 			if len(elem) == 0 {
-				break
+				switch r.Method {
+				case "GET":
+					s.handleGetUsersRequest([0]string{}, elemIsEscaped, w, r)
+				case "POST":
+					s.handleCreateUserRequest([0]string{}, elemIsEscaped, w, r)
+				default:
+					s.notAllowed(w, r, "GET,POST")
+				}
+
+				return
 			}
 			switch elem[0] {
-			case 'e': // Prefix: "employees/"
+			case '/': // Prefix: "/"
 				origElem := elem
-				if l := len("employees/"); len(elem) >= l && elem[0:l] == "employees/" {
+				if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
 					elem = elem[l:]
 				} else {
 					break
 				}
 
-				// Param: "employee_id"
+				// Param: "user_id"
 				// Leaf parameter
 				args[0] = elem
 				elem = ""
@@ -78,7 +87,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 					// Leaf node.
 					switch r.Method {
 					case "GET":
-						s.handleGetEmployeesRequest([1]string{
+						s.handleGetUserByIdRequest([1]string{
 							args[0],
 						}, elemIsEscaped, w, r)
 					default:
@@ -86,58 +95,6 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 					}
 
 					return
-				}
-
-				elem = origElem
-			case 'u': // Prefix: "users"
-				origElem := elem
-				if l := len("users"); len(elem) >= l && elem[0:l] == "users" {
-					elem = elem[l:]
-				} else {
-					break
-				}
-
-				if len(elem) == 0 {
-					switch r.Method {
-					case "GET":
-						s.handleGetUsersRequest([0]string{}, elemIsEscaped, w, r)
-					case "POST":
-						s.handleCreateUserRequest([0]string{}, elemIsEscaped, w, r)
-					default:
-						s.notAllowed(w, r, "GET,POST")
-					}
-
-					return
-				}
-				switch elem[0] {
-				case '/': // Prefix: "/"
-					origElem := elem
-					if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
-						elem = elem[l:]
-					} else {
-						break
-					}
-
-					// Param: "user_id"
-					// Leaf parameter
-					args[0] = elem
-					elem = ""
-
-					if len(elem) == 0 {
-						// Leaf node.
-						switch r.Method {
-						case "GET":
-							s.handleGetUserByIdRequest([1]string{
-								args[0],
-							}, elemIsEscaped, w, r)
-						default:
-							s.notAllowed(w, r, "GET")
-						}
-
-						return
-					}
-
-					elem = origElem
 				}
 
 				elem = origElem
@@ -224,27 +181,46 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 			break
 		}
 		switch elem[0] {
-		case '/': // Prefix: "/v1/"
+		case '/': // Prefix: "/v1/users"
 			origElem := elem
-			if l := len("/v1/"); len(elem) >= l && elem[0:l] == "/v1/" {
+			if l := len("/v1/users"); len(elem) >= l && elem[0:l] == "/v1/users" {
 				elem = elem[l:]
 			} else {
 				break
 			}
 
 			if len(elem) == 0 {
-				break
+				switch method {
+				case "GET":
+					r.name = "GetUsers"
+					r.summary = "get users"
+					r.operationID = "getUsers"
+					r.pathPattern = "/v1/users"
+					r.args = args
+					r.count = 0
+					return r, true
+				case "POST":
+					r.name = "CreateUser"
+					r.summary = "create user"
+					r.operationID = "createUser"
+					r.pathPattern = "/v1/users"
+					r.args = args
+					r.count = 0
+					return r, true
+				default:
+					return
+				}
 			}
 			switch elem[0] {
-			case 'e': // Prefix: "employees/"
+			case '/': // Prefix: "/"
 				origElem := elem
-				if l := len("employees/"); len(elem) >= l && elem[0:l] == "employees/" {
+				if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
 					elem = elem[l:]
 				} else {
 					break
 				}
 
-				// Param: "employee_id"
+				// Param: "user_id"
 				// Leaf parameter
 				args[0] = elem
 				elem = ""
@@ -253,80 +229,16 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 					// Leaf node.
 					switch method {
 					case "GET":
-						r.name = "GetEmployees"
-						r.summary = "get employees"
-						r.operationID = "getEmployees"
-						r.pathPattern = "/v1/employees/{employee_id}"
+						r.name = "GetUserById"
+						r.summary = "get user by id"
+						r.operationID = "getUserById"
+						r.pathPattern = "/v1/users/{user_id}"
 						r.args = args
 						r.count = 1
 						return r, true
 					default:
 						return
 					}
-				}
-
-				elem = origElem
-			case 'u': // Prefix: "users"
-				origElem := elem
-				if l := len("users"); len(elem) >= l && elem[0:l] == "users" {
-					elem = elem[l:]
-				} else {
-					break
-				}
-
-				if len(elem) == 0 {
-					switch method {
-					case "GET":
-						r.name = "GetUsers"
-						r.summary = "get users"
-						r.operationID = "getUsers"
-						r.pathPattern = "/v1/users"
-						r.args = args
-						r.count = 0
-						return r, true
-					case "POST":
-						r.name = "CreateUser"
-						r.summary = "create user"
-						r.operationID = "createUser"
-						r.pathPattern = "/v1/users"
-						r.args = args
-						r.count = 0
-						return r, true
-					default:
-						return
-					}
-				}
-				switch elem[0] {
-				case '/': // Prefix: "/"
-					origElem := elem
-					if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
-						elem = elem[l:]
-					} else {
-						break
-					}
-
-					// Param: "user_id"
-					// Leaf parameter
-					args[0] = elem
-					elem = ""
-
-					if len(elem) == 0 {
-						// Leaf node.
-						switch method {
-						case "GET":
-							r.name = "GetUserById"
-							r.summary = "get user by id"
-							r.operationID = "getUserById"
-							r.pathPattern = "/v1/users/{user_id}"
-							r.args = args
-							r.count = 1
-							return r, true
-						default:
-							return
-						}
-					}
-
-					elem = origElem
 				}
 
 				elem = origElem

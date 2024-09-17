@@ -14,12 +14,6 @@ type Handler interface {
 	//
 	// POST /v1/users
 	CreateUser(ctx context.Context, req *User) (CreateUserRes, error)
-	// GetEmployees implements getEmployees operation.
-	//
-	// Get all employees.
-	//
-	// GET /v1/employees/{employee_id}
-	GetEmployees(ctx context.Context, params GetEmployeesParams) (GetEmployeesRes, error)
 	// GetUserById implements getUserById operation.
 	//
 	// Get user by id.

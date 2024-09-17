@@ -5,10 +5,6 @@ type CreateUserRes interface {
 	createUserRes()
 }
 
-type GetEmployeesRes interface {
-	getEmployeesRes()
-}
-
 type GetUserByIdRes interface {
 	getUserByIdRes()
 }

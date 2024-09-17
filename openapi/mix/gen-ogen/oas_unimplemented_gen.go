@@ -22,15 +22,6 @@ func (UnimplementedHandler) CreateUser(ctx context.Context, req *User) (r Create
 	return r, ht.ErrNotImplemented
 }
 
-// GetEmployees implements getEmployees operation.
-//
-// Get all employees.
-//
-// GET /v1/employees/{employee_id}
-func (UnimplementedHandler) GetEmployees(ctx context.Context, params GetEmployeesParams) (r GetEmployeesRes, _ error) {
-	return r, ht.ErrNotImplemented
-}
-
 // GetUserById implements getUserById operation.
 //
 // Get user by id.
