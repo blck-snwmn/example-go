@@ -8,6 +8,7 @@ use (
 	./openapi/ogen
 	./standard/generics
 	./standard/http
+	./standard/http-multimux
 	./standard/iter
 	./standard/unique
 	./tools/eg
