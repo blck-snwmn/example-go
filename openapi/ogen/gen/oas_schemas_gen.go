@@ -2,6 +2,21 @@
 
 package gen
 
+// CreateUserBadRequest is response for CreateUser operation.
+type CreateUserBadRequest struct{}
+
+func (*CreateUserBadRequest) createUserRes() {}
+
+// CreateUserCreated is response for CreateUser operation.
+type CreateUserCreated struct{}
+
+func (*CreateUserCreated) createUserRes() {}
+
+// CreateUserInternalServerError is response for CreateUser operation.
+type CreateUserInternalServerError struct{}
+
+func (*CreateUserInternalServerError) createUserRes() {}
+
 // GetEmployeesBadRequest is response for GetEmployees operation.
 type GetEmployeesBadRequest struct{}
 

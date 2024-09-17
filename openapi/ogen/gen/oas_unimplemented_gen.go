@@ -13,6 +13,15 @@ type UnimplementedHandler struct{}
 
 var _ Handler = UnimplementedHandler{}
 
+// CreateUser implements createUser operation.
+//
+// Create a new user.
+//
+// POST /v1/users
+func (UnimplementedHandler) CreateUser(ctx context.Context, req *User) (r CreateUserRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // GetEmployees implements getEmployees operation.
 //
 // Get all employees.

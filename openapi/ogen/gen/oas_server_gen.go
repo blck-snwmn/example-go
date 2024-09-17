@@ -8,6 +8,12 @@ import (
 
 // Handler handles operations described by OpenAPI v3 specification.
 type Handler interface {
+	// CreateUser implements createUser operation.
+	//
+	// Create a new user.
+	//
+	// POST /v1/users
+	CreateUser(ctx context.Context, req *User) (CreateUserRes, error)
 	// GetEmployees implements getEmployees operation.
 	//
 	// Get all employees.

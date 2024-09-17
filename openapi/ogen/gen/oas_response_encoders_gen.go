@@ -11,6 +11,31 @@ import (
 	"go.opentelemetry.io/otel/trace"
 )
 
+func encodeCreateUserResponse(response CreateUserRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *CreateUserCreated:
+		w.WriteHeader(201)
+		span.SetStatus(codes.Ok, http.StatusText(201))
+
+		return nil
+
+	case *CreateUserBadRequest:
+		w.WriteHeader(400)
+		span.SetStatus(codes.Error, http.StatusText(400))
+
+		return nil
+
+	case *CreateUserInternalServerError:
+		w.WriteHeader(500)
+		span.SetStatus(codes.Error, http.StatusText(500))
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
 func encodeGetEmployeesResponse(response GetEmployeesRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
 	case *GetEmployeesOK:
