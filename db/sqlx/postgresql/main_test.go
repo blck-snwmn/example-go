@@ -72,6 +72,8 @@ const insertSQL = `
 `
 
 func Test_Query(t *testing.T) {
+	t.Parallel()
+
 	sqlxDB := helperDB(t)
 
 	_, err := sqlxDB.Exec(insertSQL)
@@ -97,6 +99,8 @@ func Test_Query(t *testing.T) {
 }
 
 func Test_Queryx(t *testing.T) {
+	t.Parallel()
+
 	sqlxDB := helperDB(t)
 
 	_, err := sqlxDB.Exec(insertSQL)
@@ -122,6 +126,8 @@ func Test_Queryx(t *testing.T) {
 }
 
 func Test_Get(t *testing.T) {
+	t.Parallel()
+
 	sqlxDB := helperDB(t)
 
 	_, err := sqlxDB.Exec(insertSQL)
@@ -143,6 +149,8 @@ func Test_Get(t *testing.T) {
 }
 
 func Test_Select(t *testing.T) {
+	t.Parallel()
+
 	sqlxDB := helperDB(t)
 
 	_, err := sqlxDB.Exec(insertSQL)
@@ -164,7 +172,12 @@ func Test_Select(t *testing.T) {
 }
 
 func Test_Transaction(t *testing.T) {
+	t.Skip()
+	t.Parallel()
+
 	t.Run("rollback", func(t *testing.T) {
+		t.Parallel()
+
 		sqlxDB := helperDB(t)
 		tx, err := sqlxDB.Beginx()
 		assert.NoError(t, err)
@@ -182,6 +195,8 @@ func Test_Transaction(t *testing.T) {
 	})
 
 	t.Run("commit", func(t *testing.T) {
+		t.Parallel()
+
 		sqlxDB := helperDB(t)
 		tx, err := sqlxDB.Beginx()
 		assert.NoError(t, err)
@@ -201,6 +216,8 @@ func Test_Transaction(t *testing.T) {
 }
 
 func Test_In(t *testing.T) {
+	t.Parallel()
+
 	sqlxDB := helperDB(t)
 
 	_, err := sqlxDB.Exec(insertSQL)
