@@ -10,6 +10,7 @@ use (
 	./standard/http
 	./standard/http-multimux
 	./standard/iter
+	./standard/lang
 	./standard/unique
 	./tools/eg
 )
