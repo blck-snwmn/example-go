@@ -5,15 +5,13 @@ import (
 	"log"
 	"testing"
 
-	_ "github.com/go-sql-driver/mysql"
-
 	"github.com/DATA-DOG/go-txdb"
 	"github.com/blck-snwmn/example-go/db/sqlx/db"
 	"github.com/google/uuid"
+	_ "github.com/jackc/pgx/v5"
 	"github.com/jmoiron/sqlx"
 	"github.com/stretchr/testify/assert"
-	"github.com/testcontainers/testcontainers-go"
-	"github.com/testcontainers/testcontainers-go/modules/mysql"
+	"github.com/testcontainers/testcontainers-go/modules/postgres"
 )
 
 func TestMain(m *testing.M) {
@@ -26,23 +24,22 @@ func TestMain(m *testing.M) {
 func testMain(m *testing.M) error {
 	ctx := context.Background()
 
-	mysqlContainer, err := mysql.Run(
-		ctx,
-		"mysql:5.7",
-		testcontainers.WithEnv(map[string]string{
-			"MYSQL_ROOT": "secret",
-		}),
+	postgresContainer, err := postgres.Run(ctx,
+		"postgres:16-alpine",
+		postgres.WithDatabase("test"),
+		postgres.WithUsername("user"),
+		postgres.WithPassword("password"),
 	)
 	if err != nil {
 		return err
 	}
-	defer mysqlContainer.Terminate(ctx)
+	defer postgresContainer.Terminate(ctx)
 
-	connStr, err := mysqlContainer.ConnectionString(ctx)
+	connStr, err := postgresContainer.ConnectionString(ctx)
 	if err != nil {
 		return err
 	}
-	sqlxDB, err := sqlx.Open("mysql", connStr)
+	sqlxDB, err := sqlx.Open("postgres", connStr)
 	if err != nil {
 		return err
 	}
@@ -63,12 +60,18 @@ type User struct {
 	Name string
 }
 
-func Test_Query(t *testing.T) {
-	t.Parallel()
+const insertSQL = `
+	INSERT INTO users (id, name, bio) 
+	VALUES
+		 ('1', 'Alice', 'Hello'), 
+		 ('2', 'Bob', 'World'),
+		 ('3', 'Charlie', 'Goodbye')
+`
 
+func Test_Query(t *testing.T) {
 	sqlxDB := helperDB(t)
 
-	_, err := sqlxDB.Exec("INSERT INTO users (id, name, bio) VALUES ('1', 'Alice', 'Hello'), ('2', 'Bob', 'World')")
+	_, err := sqlxDB.Exec(insertSQL)
 	assert.NoError(t, err)
 
 	rows, err := sqlxDB.QueryContext(context.Background(), "SELECT * FROM users")
@@ -87,15 +90,13 @@ func Test_Query(t *testing.T) {
 	err = rows.Err()
 	assert.NoError(t, err)
 
-	assert.Equal(t, 2, len(users))
+	assert.Equal(t, 3, len(users))
 }
 
 func Test_Queryx(t *testing.T) {
-	t.Parallel()
-
 	sqlxDB := helperDB(t)
 
-	_, err := sqlxDB.Exec("INSERT INTO users (id, name, bio) VALUES ('3', 'Alice', 'Hello'), ('4', 'Bob', 'World')")
+	_, err := sqlxDB.Exec(insertSQL)
 	assert.NoError(t, err)
 
 	rows, err := sqlxDB.QueryxContext(context.Background(), "SELECT * FROM users")
@@ -114,52 +115,58 @@ func Test_Queryx(t *testing.T) {
 	err = rows.Err()
 	assert.NoError(t, err)
 
-	assert.Equal(t, 2, len(users))
+	assert.Equal(t, 3, len(users))
 }
 
 func Test_Get(t *testing.T) {
-	t.Parallel()
-
 	sqlxDB := helperDB(t)
 
-	_, err := sqlxDB.Exec("INSERT INTO users (id, name, bio) VALUES ('5', 'Alice', 'Hello'), ('6', 'Bob', 'World')")
+	_, err := sqlxDB.Exec(insertSQL)
 	assert.NoError(t, err)
 
 	var user User
-	err = sqlxDB.GetContext(context.Background(), &user, "SELECT * FROM users")
+	err = sqlxDB.GetContext(
+		context.Background(),
+		&user,
+		"SELECT * FROM users  where id = ?",
+		"1",
+	)
 	assert.NoError(t, err)
 
-	assert.Equal(t, User{ID: "5", Name: "Alice", Bio: "Hello"}, user)
+	assert.Equal(t,
+		User{ID: "1", Name: "Alice", Bio: "Hello"},
+		user,
+	)
 }
 
 func Test_Select(t *testing.T) {
-	t.Parallel()
-
 	sqlxDB := helperDB(t)
 
-	_, err := sqlxDB.Exec("INSERT INTO users (id, name, bio) VALUES ('7', 'Alice', 'Hello'), ('8', 'Bob', 'World')")
+	_, err := sqlxDB.Exec(insertSQL)
 	assert.NoError(t, err)
 
 	users := []User{}
-	err = sqlxDB.SelectContext(context.Background(), &users, "SELECT * FROM users")
+	err = sqlxDB.SelectContext(
+		context.Background(),
+		&users,
+		"SELECT * FROM users order by id",
+	)
 	assert.NoError(t, err)
 
 	assert.Equal(t, []User{
-		{ID: "7", Name: "Alice", Bio: "Hello"},
-		{ID: "8", Name: "Bob", Bio: "World"},
+		{ID: "1", Name: "Alice", Bio: "Hello"},
+		{ID: "2", Name: "Bob", Bio: "World"},
+		{ID: "3", Name: "Charlie", Bio: "Goodbye"},
 	}, users)
 }
 
 func Test_Transaction(t *testing.T) {
-	t.Parallel()
-
-	sqlxDB := helperDB(t)
-
-	{
+	t.Run("rollback", func(t *testing.T) {
+		sqlxDB := helperDB(t)
 		tx, err := sqlxDB.Beginx()
 		assert.NoError(t, err)
 
-		_, err = tx.Exec("INSERT INTO users (id, name, bio) VALUES ('9', 'Alice', 'Hello'), ('10', 'Bob', 'World')")
+		_, err = tx.Exec(insertSQL)
 		assert.NoError(t, err)
 
 		tx.Rollback()
@@ -169,12 +176,14 @@ func Test_Transaction(t *testing.T) {
 		assert.NoError(t, err)
 
 		assert.Equal(t, 0, len(users))
-	}
-	{
+	})
+
+	t.Run("commit", func(t *testing.T) {
+		sqlxDB := helperDB(t)
 		tx, err := sqlxDB.Beginx()
 		assert.NoError(t, err)
 
-		_, err = tx.Exec("INSERT INTO users (id, name, bio) VALUES ('9', 'Alice', 'Hello'), ('10', 'Bob', 'World')")
+		_, err = tx.Exec(insertSQL)
 		assert.NoError(t, err)
 
 		err = tx.Commit()
@@ -184,22 +193,14 @@ func Test_Transaction(t *testing.T) {
 		err = sqlxDB.SelectContext(context.Background(), &users, "SELECT * FROM users")
 		assert.NoError(t, err)
 
-		assert.Equal(t, 2, len(users))
-	}
+		assert.Equal(t, 3, len(users))
+	})
 }
 
 func Test_In(t *testing.T) {
-	t.Parallel()
-
 	sqlxDB := helperDB(t)
 
-	_, err := sqlxDB.Exec(`
-		INSERT INTO users (id, name, bio) VALUES
-		('11', 'Alice', 'Hello'),
-		('12', 'Bob', 'World'),
-		('13', 'Charlie', 'Hello'),
-		('14', 'David', 'World')
-	`)
+	_, err := sqlxDB.Exec(insertSQL)
 	assert.NoError(t, err)
 
 	query, args, err := sqlx.In("SELECT * FROM users WHERE name IN (?)", []string{"Alice", "Bob"})
@@ -210,15 +211,15 @@ func Test_In(t *testing.T) {
 	assert.NoError(t, err)
 
 	assert.Equal(t, []User{
-		{ID: "11", Name: "Alice", Bio: "Hello"},
-		{ID: "12", Name: "Bob", Bio: "World"},
+		{ID: "1", Name: "Alice", Bio: "Hello"},
+		{ID: "2", Name: "Bob", Bio: "World"},
 	}, users)
 }
 
 func helperDB(t *testing.T) *sqlx.DB {
 	t.Helper()
-
-	sqlxDB := sqlx.MustOpen("txdb", uuid.NewString())
+	uid := uuid.NewString()
+	sqlxDB := sqlx.MustOpen("txdb", uid)
 
 	t.Cleanup(func() {
 		sqlxDB.Close()
