@@ -12,5 +12,6 @@ use (
 	./standard/iter
 	./standard/lang
 	./standard/unique
+	./test/exportexample
 	./tools/eg
 )
