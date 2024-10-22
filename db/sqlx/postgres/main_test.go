@@ -5,15 +5,13 @@ import (
 	"log"
 	"testing"
 
-	_ "github.com/go-sql-driver/mysql"
-
 	"github.com/DATA-DOG/go-txdb"
 	"github.com/blck-snwmn/example-go/db/sqlx/db"
 	"github.com/google/uuid"
+	_ "github.com/jackc/pgx/v5"
 	"github.com/jmoiron/sqlx"
 	"github.com/stretchr/testify/assert"
-	"github.com/testcontainers/testcontainers-go"
-	"github.com/testcontainers/testcontainers-go/modules/mysql"
+	"github.com/testcontainers/testcontainers-go/modules/postgres"
 )
 
 func TestMain(m *testing.M) {
@@ -26,23 +24,22 @@ func TestMain(m *testing.M) {
 func testMain(m *testing.M) error {
 	ctx := context.Background()
 
-	mysqlContainer, err := mysql.Run(
-		ctx,
-		"mysql:5.7",
-		testcontainers.WithEnv(map[string]string{
-			"MYSQL_ROOT": "secret",
-		}),
+	postgresContainer, err := postgres.Run(ctx,
+		"postgres:16-alpine",
+		postgres.WithDatabase("test"),
+		postgres.WithUsername("user"),
+		postgres.WithPassword("password"),
 	)
 	if err != nil {
 		return err
 	}
-	defer mysqlContainer.Terminate(ctx)
+	defer postgresContainer.Terminate(ctx)
 
-	connStr, err := mysqlContainer.ConnectionString(ctx)
+	connStr, err := postgresContainer.ConnectionString(ctx)
 	if err != nil {
 		return err
 	}
-	sqlxDB, err := sqlx.Open("mysql", connStr)
+	sqlxDB, err := sqlx.Open("postgres", connStr)
 	if err != nil {
 		return err
 	}
@@ -72,8 +69,6 @@ const insertSQL = `
 `
 
 func Test_Query(t *testing.T) {
-	t.Parallel()
-
 	sqlxDB := helperDB(t)
 
 	_, err := sqlxDB.Exec(insertSQL)
@@ -99,8 +94,6 @@ func Test_Query(t *testing.T) {
 }
 
 func Test_Queryx(t *testing.T) {
-	t.Parallel()
-
 	sqlxDB := helperDB(t)
 
 	_, err := sqlxDB.Exec(insertSQL)
@@ -126,8 +119,6 @@ func Test_Queryx(t *testing.T) {
 }
 
 func Test_Get(t *testing.T) {
-	t.Parallel()
-
 	sqlxDB := helperDB(t)
 
 	_, err := sqlxDB.Exec(insertSQL)
@@ -149,8 +140,6 @@ func Test_Get(t *testing.T) {
 }
 
 func Test_Select(t *testing.T) {
-	t.Parallel()
-
 	sqlxDB := helperDB(t)
 
 	_, err := sqlxDB.Exec(insertSQL)
@@ -172,12 +161,7 @@ func Test_Select(t *testing.T) {
 }
 
 func Test_Transaction(t *testing.T) {
-	t.Skip()
-	t.Parallel()
-
 	t.Run("rollback", func(t *testing.T) {
-		t.Parallel()
-
 		sqlxDB := helperDB(t)
 		tx, err := sqlxDB.Beginx()
 		assert.NoError(t, err)
@@ -195,8 +179,6 @@ func Test_Transaction(t *testing.T) {
 	})
 
 	t.Run("commit", func(t *testing.T) {
-		t.Parallel()
-
 		sqlxDB := helperDB(t)
 		tx, err := sqlxDB.Beginx()
 		assert.NoError(t, err)
@@ -216,8 +198,6 @@ func Test_Transaction(t *testing.T) {
 }
 
 func Test_In(t *testing.T) {
-	t.Parallel()
-
 	sqlxDB := helperDB(t)
 
 	_, err := sqlxDB.Exec(insertSQL)
@@ -238,8 +218,8 @@ func Test_In(t *testing.T) {
 
 func helperDB(t *testing.T) *sqlx.DB {
 	t.Helper()
-
-	sqlxDB := sqlx.MustOpen("txdb", uuid.NewString())
+	uid := uuid.NewString()
+	sqlxDB := sqlx.MustOpen("txdb", uid)
 
 	t.Cleanup(func() {
 		sqlxDB.Close()
