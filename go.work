@@ -10,6 +10,7 @@ use (
 	./standard/http
 	./standard/http-multimux
 	./standard/iter
+	./standard/iter-db
 	./standard/lang
 	./standard/unique
 	./test/exportexample
