@@ -4,14 +4,17 @@ import (
 	"context"
 	"log"
 	"testing"
+	"time"
 
 	"github.com/DATA-DOG/go-txdb"
 	"github.com/blck-snwmn/example-go/db/sqlx/db"
 	"github.com/google/uuid"
-	_ "github.com/jackc/pgx/v5"
+	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/jmoiron/sqlx"
 	"github.com/stretchr/testify/assert"
+	"github.com/testcontainers/testcontainers-go"
 	"github.com/testcontainers/testcontainers-go/modules/postgres"
+	"github.com/testcontainers/testcontainers-go/wait"
 )
 
 func TestMain(m *testing.M) {
@@ -29,6 +32,9 @@ func testMain(m *testing.M) error {
 		postgres.WithDatabase("test"),
 		postgres.WithUsername("user"),
 		postgres.WithPassword("password"),
+		testcontainers.WithWaitStrategy(
+			wait.ForLog("database system is ready to accept connections").
+				WithOccurrence(2).WithStartupTimeout(5*time.Second)),
 	)
 	if err != nil {
 		return err
@@ -39,7 +45,7 @@ func testMain(m *testing.M) error {
 	if err != nil {
 		return err
 	}
-	sqlxDB, err := sqlx.Open("postgres", connStr)
+	sqlxDB, err := sqlx.Open("pgx", connStr)
 	if err != nil {
 		return err
 	}
@@ -47,7 +53,10 @@ func testMain(m *testing.M) error {
 	if _, err := sqlxDB.Exec(db.Schema); err != nil {
 		return err
 	}
-	txdb.Register("txdb", "mysql", connStr)
+	txdb.Register("txdb", "pgx", connStr)
+
+	// txdb does not exist in `sqlx.defaultBinds`, so bind
+	sqlx.BindDriver("txdb", sqlx.DOLLAR)
 
 	m.Run()
 
@@ -128,7 +137,7 @@ func Test_Get(t *testing.T) {
 	err = sqlxDB.GetContext(
 		context.Background(),
 		&user,
-		"SELECT * FROM users  where id = ?",
+		"SELECT * FROM users  where id = $1",
 		"1",
 	)
 	assert.NoError(t, err)
