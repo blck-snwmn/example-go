@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"iter"
 	"log"
 	"testing"
 	"time"
@@ -56,10 +57,11 @@ func testMain(m *testing.M) error {
 		{ID: "1", Name: "Alice", Bio: "Lorem ipsum"},
 	}
 	for i := 0; i < 100; i++ {
+
 		users = append(users, User{
-			ID:   uuid.NewString(),
-			Name: uuid.NewString(),
-			Bio:  uuid.NewString(),
+			ID:   uuid.Must(uuid.NewV7()).String(),
+			Name: uuid.Must(uuid.NewV7()).String(),
+			Bio:  uuid.Must(uuid.NewV7()).String(),
 		})
 	}
 
@@ -93,4 +95,92 @@ func TestSimpleGet(t *testing.T) {
 	assert.NoError(t, err)
 
 	assert.Len(t, users, 101)
+}
+
+func TestIter(t *testing.T) {
+	sqlxdb := sqlx.MustOpen("pgx", connStr)
+	defer sqlxdb.Close()
+
+	var (
+		dataCount int
+		loopCount int
+	)
+
+	seqer := &DBSeqer{}
+	for users := range seqer.Seq(sqlxdb, 10) {
+		dataCount += len(users)
+		loopCount++
+	}
+	assert.Equal(t, 101, dataCount)
+	assert.Equal(t, 11, loopCount)
+	assert.Equal(t, 11, seqer.LoopCouter)
+	assert.NoError(t, seqer.Err)
+}
+
+func TestIter_just(t *testing.T) {
+	sqlxdb := sqlx.MustOpen("pgx", connStr)
+	defer sqlxdb.Close()
+
+	var (
+		dataCount int
+		loopCount int
+	)
+
+	seqer := &DBSeqer{}
+	for users := range seqer.Seq(sqlxdb, 101) {
+		dataCount += len(users)
+		loopCount++
+	}
+	assert.Equal(t, 101, dataCount)
+	assert.Equal(t, 1, loopCount)
+	assert.Equal(t, 1, seqer.LoopCouter)
+	assert.NoError(t, seqer.Err)
+}
+
+type DBSeqer struct {
+	Err        error
+	LoopCouter int
+}
+
+func (d *DBSeqer) Seq(sqlxdb *sqlx.DB, limit int) iter.Seq[[]User] {
+	return func(yield func([]User) bool) {
+		offset := 0
+		for {
+			d.LoopCouter++
+
+			var (
+				users []User
+				next  bool
+			)
+			users, next, d.Err = d.selectData(sqlxdb, limit, offset)
+			if d.Err != nil {
+				return
+			}
+
+			if !yield(users) {
+				return
+			}
+
+			if !next {
+				return
+			}
+
+			offset += limit
+		}
+	}
+}
+
+func (d *DBSeqer) selectData(sqlxdb *sqlx.DB, limit, offset int) ([]User, bool, error) {
+	var users []User
+	err := sqlxdb.Select(&users, "SELECT * FROM users LIMIT $1 OFFSET $2", limit+1, offset)
+	if err != nil {
+		return nil, false, err
+	}
+
+	if len(users) == 0 {
+		return nil, false, nil
+	}
+
+	end := min(len(users), limit)
+	return users[:end], len(users) > limit, nil
 }
