@@ -14,5 +14,6 @@ use (
 	./standard/lang
 	./standard/unique
 	./test/exportexample
+	./test/runn
 	./tools/eg
 )
