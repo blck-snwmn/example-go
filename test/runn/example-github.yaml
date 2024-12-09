@@ -11,7 +11,7 @@ steps:
         body: null
   test: |
     current.res.status == 200
-      && len(current.res.body) > 0
+      && len(current.res.body) > 1
 - desc: Get the first repository of the user blck-snwmn
   req:
     /repos/{{ vars.username }}/{{ steps[0].res.body[0].name }}:
