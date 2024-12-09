@@ -1,0 +1,22 @@
+desc: Example of calling the GitHub API
+runners:
+  req: https://api.github.com
+vars:
+  username: ${USER:-blck-snwmn}
+steps:
+- desc: Get the repositories of the user blck-snwmn
+  req:
+    /users/{{ vars.username }}/repos:
+      get:
+        body: null
+  test: |
+    current.res.status == 200
+      && len(current.res.body) > 0
+- desc: Get the first repository of the user blck-snwmn
+  req:
+    /repos/{{ vars.username }}/{{ previous.res.body[0].name }}:
+      get:
+        body: null
+  test: |
+    current.res.status == 200
+      && current.res.body.id == previous.res.body[0].id
