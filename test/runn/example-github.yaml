@@ -20,3 +20,11 @@ steps:
   test: |
     current.res.status == 200
       && steps[1].res.body.id == steps[0].res.body[0].id
+- desc: Get the first repository of the user blck-snwmn
+  req:
+    /repos/{{ vars.username }}/{{ steps[0].res.body[1].name }}:
+      get:
+        body: null
+  test: |
+    current.res.status == 200
+      && steps[2].res.body.full_name == steps[0].res.body[1].full_name
