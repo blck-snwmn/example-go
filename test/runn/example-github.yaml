@@ -13,21 +13,23 @@ steps:
     test: |
       current.res.status == 200
         && len(current.res.body) > 1
+    bind:
+      repositories: current.res.body
   showFirstRepository:
     desc: Get the first repository of the user blck-snwmn
     req:
-      /repos/{{ vars.username }}/{{ steps.showAllRrepository.res.body[0].name }}:
+      /repos/{{ vars.username }}/{{ repositories[0].name }}:
         get:
           body: null
     test: |
       current.res.status == 200
-        && steps.showFirstRepository.res.body.id == steps.showAllRrepository.res.body[0].id
+        && steps.showFirstRepository.res.body.id == repositories[0].id
   showSecondRepository:
     desc: Get the first repository of the user blck-snwmn
     req:
-      /repos/{{ vars.username }}/{{ steps.showAllRrepository.res.body[1].name }}:
+      /repos/{{ vars.username }}/{{ repositories[1].name }}:
         get:
           body: null
     test: |
       current.res.status == 200
-        && steps.showSecondRepository.res.body.full_name == steps.showAllRrepository.res.body[1].full_name
+        && steps.showSecondRepository.res.body.full_name == repositories[1].full_name
