@@ -2,7 +2,6 @@ package: gen
 output: gen/api.gen.go
 generate:
   models: true
-  std-http-server: true
-  client: true
+  chi-server: true
 output-options:
   nullable-type: true

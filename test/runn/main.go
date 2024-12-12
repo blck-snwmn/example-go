@@ -3,7 +3,6 @@ package main
 import (
 	"cmp"
 	"encoding/json"
-	"fmt"
 	"log/slog"
 	"maps"
 	"net/http"
@@ -11,6 +10,7 @@ import (
 	"sync"
 
 	"github.com/blck-snwmn/example-go/test/runn/gen"
+	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
 )
 
@@ -47,6 +47,7 @@ func (s *server) GetUserById(w http.ResponseWriter, r *http.Request, userId stri
 	defer s.mux.Unlock()
 
 	if user, ok := store[userId]; ok {
+		w.Header().Set("Content-Type", "application/json")
 		_ = json.NewEncoder(w).Encode(gen.User{
 			Id:   user.ID,
 			Name: user.Name,
@@ -71,7 +72,8 @@ func (s *server) GetUsers(w http.ResponseWriter, r *http.Request) {
 			Name: user.Name,
 		})
 	}
-	_ = json.NewEncoder(w).Encode(users)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(users)
 }
 
 func NewServer() gen.ServerInterface {
@@ -80,15 +82,25 @@ func NewServer() gen.ServerInterface {
 
 func main() {
 	srv := NewServer()
-	r := http.NewServeMux()
+	r := chi.NewMux()
+	r.Use(func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			trace := r.Header.Get("X-Runn-Trace")
+			slog.Info("access",
+				slog.String("trace", trace),
+				slog.String("method", r.Method),
+				slog.String("path", r.URL.Path),
+			)
+			next.ServeHTTP(w, r)
+		})
+	})
 
-	gen.HandlerFromMux(srv, r)
+	h := gen.HandlerFromMux(srv, r)
 
 	s := &http.Server{
-		Addr:    ":8080",
-		Handler: r,
+		Handler: h,
+		Addr:    "0.0.0.0:8080",
 	}
-	slog.Info(fmt.Sprintf("listening on %s", s.Addr))
 
 	s.ListenAndServe()
 }
