@@ -22,7 +22,7 @@ steps:
         post:
           body:
             application/json:
-              name: "user-{{ i }}"
+              name: "{{ faker.LetterN(10) }}"
     test: |
       current.res.status == 201
   showAllUsersAgain:
