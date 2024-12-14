@@ -9,7 +9,7 @@ import (
 	"slices"
 	"sync"
 
-	"github.com/blck-snwmn/example-go/test/runn/gen"
+	"github.com/blck-snwmn/example-go/test/runn/api"
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
 )
@@ -25,9 +25,9 @@ type server struct {
 	mux sync.Mutex
 }
 
-// CreateUser implements gen.ServerInterface.
+// CreateUser implements api.ServerInterface.
 func (s *server) CreateUser(w http.ResponseWriter, r *http.Request) {
-	var u gen.CreateUser
+	var u api.CreateUser
 	if err := json.NewDecoder(r.Body).Decode(&u); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -41,14 +41,14 @@ func (s *server) CreateUser(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 }
 
-// GetUserById implements gen.ServerInterface.
+// GetUserById implements api.ServerInterface.
 func (s *server) GetUserById(w http.ResponseWriter, r *http.Request, userId string) {
 	s.mux.Lock()
 	defer s.mux.Unlock()
 
 	if user, ok := store[userId]; ok {
 		w.Header().Set("Content-Type", "application/json")
-		_ = json.NewEncoder(w).Encode(gen.User{
+		_ = json.NewEncoder(w).Encode(api.User{
 			Id:   user.ID,
 			Name: user.Name,
 		})
@@ -57,17 +57,17 @@ func (s *server) GetUserById(w http.ResponseWriter, r *http.Request, userId stri
 	w.WriteHeader(http.StatusNotFound)
 }
 
-// GetUsers implements gen.ServerInterface.
+// GetUsers implements api.ServerInterface.
 func (s *server) GetUsers(w http.ResponseWriter, r *http.Request) {
 	s.mux.Lock()
 	defer s.mux.Unlock()
 
-	users := make([]gen.User, 0, len(store))
+	users := make([]api.User, 0, len(store))
 	sortedUsers := slices.SortedFunc(maps.Values(store), func(l, r User) int {
 		return cmp.Compare(l.Name, r.Name)
 	})
 	for _, user := range sortedUsers {
-		users = append(users, gen.User{
+		users = append(users, api.User{
 			Id:   user.ID,
 			Name: user.Name,
 		})
@@ -76,7 +76,7 @@ func (s *server) GetUsers(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(users)
 }
 
-func NewServer() gen.ServerInterface {
+func NewServer() api.ServerInterface {
 	return &server{}
 }
 
@@ -95,7 +95,7 @@ func main() {
 		})
 	})
 
-	h := gen.HandlerFromMux(srv, r)
+	h := api.HandlerFromMux(srv, r)
 
 	s := &http.Server{
 		Handler: h,
