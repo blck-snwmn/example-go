@@ -12,6 +12,7 @@ use (
 	./standard/iter
 	./standard/iter-db
 	./standard/lang
+	./standard/slog
 	./standard/unique
 	./test/exportexample
 	./test/runn
