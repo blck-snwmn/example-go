@@ -118,8 +118,8 @@ func (s *badserver) GetUserById(w http.ResponseWriter, r *http.Request, userId s
 	if user, ok := store[userId]; ok {
 		w.Header().Set("Content-Type", "application/json")
 		type User struct {
-			Id   string `json:"idx"`
-			Name string `json:"name"`
+			Id   string `json:"id"`
+			Name string `json:"namex"`
 		}
 		_ = json.NewEncoder(w).Encode(User{
 			Id:   user.ID,
