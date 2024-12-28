@@ -1,0 +1,17 @@
+desc: Example of calling the Own API
+runners:
+  req: 
+    endpoint: http://localhost:8080
+    openapi3: ./api/openapi.yaml
+    skipValidateRequest: false
+    skipValidateResponse: false
+    trace: true
+steps:
+  requestHeavy:
+    desc: Request heavy
+    req:
+      /v1/heavy:
+        get:
+          body: null
+    test: |
+      current.res.status == 200

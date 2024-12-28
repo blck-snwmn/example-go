@@ -40,9 +40,26 @@ func TestRunn(t *testing.T) {
 }
 
 func TestRunnN(t *testing.T) {
+	// run sequential
 	opts := []runn.Option{
 		runn.T(t),
 		runn.Runner("req", url),
+	}
+	o, err := runn.Load("./books/example-o*.yaml", opts...)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := o.RunN(context.Background()); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestRunnConcurrentN(t *testing.T) {
+	// run concurrently
+	opts := []runn.Option{
+		runn.T(t),
+		runn.Runner("req", url),
+		runn.RunConcurrent(true, 10), // 10 is magic number
 	}
 	o, err := runn.Load("./books/example-o*.yaml", opts...)
 	if err != nil {
