@@ -11,7 +11,8 @@ import (
 )
 
 var (
-	serverURL string
+	serverURL    string
+	badServerURL string
 )
 
 func TestMain(m *testing.M) {
@@ -19,6 +20,10 @@ func TestMain(m *testing.M) {
 	defer ts.Close()
 
 	serverURL = ts.URL
+
+	badts := httptest.NewServer(api.HandlerFromMux(NewBadServer(), chi.NewMux()))
+	defer badts.Close()
+	badServerURL = badts.URL
 
 	m.Run()
 }
@@ -28,6 +33,28 @@ func TestRunn(t *testing.T) {
 		runn.T(t),
 		runn.Book("books/example-ownserver.yaml"),
 		runn.Runner("req", serverURL),
+	}
+	o, err := runn.New(opts...)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := o.Run(context.Background()); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestRunnCheckOAPI(t *testing.T) {
+	t.Skip("faild test for invalid oapi response")
+	opts := []runn.Option{
+		runn.T(t),
+		runn.Book("books/example-ownserver.yaml"),
+		runn.Runner(
+			"req",
+			badServerURL,
+			runn.OpenAPI3("./api/openapi.yaml"),
+			runn.SkipValidateRequest(false),
+			runn.SkipValidateResponse(false),
+		),
 	}
 	o, err := runn.New(opts...)
 	if err != nil {
