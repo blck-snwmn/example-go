@@ -21,17 +21,17 @@ type User struct {
 
 var store = make(map[string]User)
 
-type server struct {
+type badserver struct {
 	mux sync.Mutex
 }
 
 // GetHeavy implements api.ServerInterface.
-func (s *server) GetHeavy(w http.ResponseWriter, r *http.Request) {
+func (s *badserver) GetHeavy(w http.ResponseWriter, r *http.Request) {
 	panic("unimplemented")
 }
 
 // CreateUser implements api.ServerInterface.
-func (s *server) CreateUser(w http.ResponseWriter, r *http.Request) {
+func (s *badserver) CreateUser(w http.ResponseWriter, r *http.Request) {
 	var u api.CreateUser
 	if err := json.NewDecoder(r.Body).Decode(&u); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -47,7 +47,7 @@ func (s *server) CreateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 // GetUserById implements api.ServerInterface.
-func (s *server) GetUserById(w http.ResponseWriter, r *http.Request, userId string) {
+func (s *badserver) GetUserById(w http.ResponseWriter, r *http.Request, userId string) {
 	s.mux.Lock()
 	defer s.mux.Unlock()
 
@@ -67,7 +67,7 @@ func (s *server) GetUserById(w http.ResponseWriter, r *http.Request, userId stri
 }
 
 // GetUsers implements api.ServerInterface.
-func (s *server) GetUsers(w http.ResponseWriter, r *http.Request) {
+func (s *badserver) GetUsers(w http.ResponseWriter, r *http.Request) {
 	s.mux.Lock()
 	defer s.mux.Unlock()
 
@@ -85,12 +85,12 @@ func (s *server) GetUsers(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(users)
 }
 
-func NewServer() api.ServerInterface {
-	return &server{}
+func NewBadServer() api.ServerInterface {
+	return &badserver{}
 }
 
 func main() {
-	srv := NewServer()
+	srv := NewBadServer()
 	r := chi.NewMux()
 	r.Use(func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
