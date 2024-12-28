@@ -10,16 +10,15 @@ import (
 	"github.com/k1LoW/runn"
 )
 
-var url string
+var (
+	serverURL string
+)
 
 func TestMain(m *testing.M) {
-	srv := NewServer()
-	r := chi.NewMux()
-	h := api.HandlerFromMux(srv, r)
-	ts := httptest.NewServer(h)
+	ts := httptest.NewServer(api.HandlerFromMux(NewServer(), chi.NewMux()))
 	defer ts.Close()
 
-	url = ts.URL
+	serverURL = ts.URL
 
 	m.Run()
 }
@@ -28,7 +27,7 @@ func TestRunn(t *testing.T) {
 	opts := []runn.Option{
 		runn.T(t),
 		runn.Book("books/example-ownserver.yaml"),
-		runn.Runner("req", url),
+		runn.Runner("req", serverURL),
 	}
 	o, err := runn.New(opts...)
 	if err != nil {
@@ -43,7 +42,7 @@ func TestRunnN(t *testing.T) {
 	// run sequential
 	opts := []runn.Option{
 		runn.T(t),
-		runn.Runner("req", url),
+		runn.Runner("req", serverURL),
 	}
 	o, err := runn.Load("./books/example-o*.yaml", opts...)
 	if err != nil {
@@ -58,7 +57,7 @@ func TestRunnConcurrentN(t *testing.T) {
 	// run concurrently
 	opts := []runn.Option{
 		runn.T(t),
-		runn.Runner("req", url),
+		runn.Runner("req", serverURL),
 		runn.RunConcurrent(true, 10), // 10 is magic number
 	}
 	o, err := runn.Load("./books/example-o*.yaml", opts...)
