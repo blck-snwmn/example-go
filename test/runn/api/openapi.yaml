@@ -8,6 +8,19 @@ info:
 servers:
   - url: http://example.com
 paths:
+  /v1/heavy:
+    get:
+      description: Get a heavy response
+      summary: get heavy
+      operationId: getHeavy
+      security: []
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '500':
+          description: Internal Server Error
   /v1/users:
     get:
       description: Get all users

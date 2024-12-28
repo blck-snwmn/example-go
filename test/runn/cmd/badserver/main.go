@@ -25,6 +25,11 @@ type server struct {
 	mux sync.Mutex
 }
 
+// GetHeavy implements api.ServerInterface.
+func (s *server) GetHeavy(w http.ResponseWriter, r *http.Request) {
+	panic("unimplemented")
+}
+
 // CreateUser implements api.ServerInterface.
 func (s *server) CreateUser(w http.ResponseWriter, r *http.Request) {
 	var u api.CreateUser

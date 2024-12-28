@@ -30,6 +30,9 @@ type CreateUserJSONRequestBody = CreateUser
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
+	// get heavy
+	// (GET /v1/heavy)
+	GetHeavy(w http.ResponseWriter, r *http.Request)
 	// get users
 	// (GET /v1/users)
 	GetUsers(w http.ResponseWriter, r *http.Request)
@@ -44,6 +47,12 @@ type ServerInterface interface {
 // Unimplemented server implementation that returns http.StatusNotImplemented for each endpoint.
 
 type Unimplemented struct{}
+
+// get heavy
+// (GET /v1/heavy)
+func (_ Unimplemented) GetHeavy(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
 
 // get users
 // (GET /v1/users)
@@ -71,6 +80,21 @@ type ServerInterfaceWrapper struct {
 }
 
 type MiddlewareFunc func(http.Handler) http.Handler
+
+// GetHeavy operation middleware
+func (siw *ServerInterfaceWrapper) GetHeavy(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetHeavy(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r.WithContext(ctx))
+}
 
 // GetUsers operation middleware
 func (siw *ServerInterfaceWrapper) GetUsers(w http.ResponseWriter, r *http.Request) {
@@ -241,6 +265,9 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 		ErrorHandlerFunc:   options.ErrorHandlerFunc,
 	}
 
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/v1/heavy", wrapper.GetHeavy)
+	})
 	r.Group(func(r chi.Router) {
 		r.Get(options.BaseURL+"/v1/users", wrapper.GetUsers)
 	})

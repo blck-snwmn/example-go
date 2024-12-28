@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"slices"
 	"sync"
+	"time"
 
 	"github.com/blck-snwmn/example-go/test/runn/api"
 	"github.com/go-chi/chi/v5"
@@ -23,6 +24,12 @@ var store = make(map[string]User)
 
 type server struct {
 	mux sync.Mutex
+}
+
+// GetHeavy implements api.ServerInterface.
+func (s *server) GetHeavy(w http.ResponseWriter, r *http.Request) {
+	time.Sleep(5 * time.Second)
+	w.WriteHeader(http.StatusOK)
 }
 
 // CreateUser implements api.ServerInterface.
