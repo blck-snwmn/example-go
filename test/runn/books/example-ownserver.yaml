@@ -25,7 +25,7 @@ steps:
         post:
           body:
             application/json:
-              name: "{{ faker.LetterN(10) }}"
+              name: "{{ faker.UUID() }}"
     test: |
       current.res.status == 201
   showAllUsersAgain:
