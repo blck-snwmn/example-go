@@ -1,4 +1,4 @@
 ## Lint
 ```bash
-$ redocly lint api/openapi.yaml 
+$ redocly lint openapi.yaml 
 ```
