@@ -25,6 +25,21 @@ type badserver struct {
 	mux sync.Mutex
 }
 
+// CreateReport implements api.ServerInterface.
+func (s *badserver) CreateReport(w http.ResponseWriter, r *http.Request) {
+	panic("unimplemented")
+}
+
+// GetReportById implements api.ServerInterface.
+func (s *badserver) GetReportById(w http.ResponseWriter, r *http.Request, reportId string) {
+	panic("unimplemented")
+}
+
+// GetReports implements api.ServerInterface.
+func (s *badserver) GetReports(w http.ResponseWriter, r *http.Request) {
+	panic("unimplemented")
+}
+
 // GetHeavy implements api.ServerInterface.
 func (s *badserver) GetHeavy(w http.ResponseWriter, r *http.Request) {
 	panic("unimplemented")
