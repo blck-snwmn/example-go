@@ -19,7 +19,9 @@ type User struct {
 	Name string
 }
 
-var store = make(map[string]User)
+var (
+	storeUser = make(map[string]User)
+)
 
 type server struct {
 	mux sync.Mutex
@@ -42,7 +44,7 @@ func (s *server) CreateUser(w http.ResponseWriter, r *http.Request) {
 	defer s.mux.Unlock()
 
 	id := uuid.Must(uuid.NewV7()).String()
-	store[id] = User{id, u.Name}
+	storeUser[id] = User{id, u.Name}
 
 	slog.Info("create user",
 		slog.String("id", id),
@@ -57,7 +59,7 @@ func (s *server) GetUserById(w http.ResponseWriter, r *http.Request, userId stri
 	s.mux.Lock()
 	defer s.mux.Unlock()
 
-	if user, ok := store[userId]; ok {
+	if user, ok := storeUser[userId]; ok {
 		w.Header().Set("Content-Type", "application/json")
 		_ = json.NewEncoder(w).Encode(api.User{
 			Id:   user.ID,
@@ -73,8 +75,8 @@ func (s *server) GetUsers(w http.ResponseWriter, r *http.Request) {
 	s.mux.Lock()
 	defer s.mux.Unlock()
 
-	users := make([]api.User, 0, len(store))
-	sortedUsers := slices.SortedFunc(maps.Values(store), func(l, r User) int {
+	users := make([]api.User, 0, len(storeUser))
+	sortedUsers := slices.SortedFunc(maps.Values(storeUser), func(l, r User) int {
 		return cmp.Compare(l.Name, r.Name)
 	})
 	for _, user := range sortedUsers {
@@ -111,7 +113,7 @@ func (s *badserver) CreateUser(w http.ResponseWriter, r *http.Request) {
 	defer s.mux.Unlock()
 
 	id := uuid.Must(uuid.NewV7()).String()
-	store[id] = User{id, u.Name}
+	storeUser[id] = User{id, u.Name}
 
 	w.WriteHeader(http.StatusCreated)
 }
@@ -121,7 +123,7 @@ func (s *badserver) GetUserById(w http.ResponseWriter, r *http.Request, userId s
 	s.mux.Lock()
 	defer s.mux.Unlock()
 
-	if user, ok := store[userId]; ok {
+	if user, ok := storeUser[userId]; ok {
 		w.Header().Set("Content-Type", "application/json")
 		type User struct {
 			Id   string `json:"id"`
@@ -141,8 +143,8 @@ func (s *badserver) GetUsers(w http.ResponseWriter, r *http.Request) {
 	s.mux.Lock()
 	defer s.mux.Unlock()
 
-	users := make([]api.User, 0, len(store))
-	sortedUsers := slices.SortedFunc(maps.Values(store), func(l, r User) int {
+	users := make([]api.User, 0, len(storeUser))
+	sortedUsers := slices.SortedFunc(maps.Values(storeUser), func(l, r User) int {
 		return cmp.Compare(l.Name, r.Name)
 	})
 	for _, user := range sortedUsers {
