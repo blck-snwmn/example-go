@@ -29,6 +29,7 @@ func TestMain(m *testing.M) {
 }
 
 func TestRunn(t *testing.T) {
+	t.Parallel()
 	opts := []runn.Option{
 		runn.T(t),
 		runn.Book("books/example-ownserver.yaml"),
@@ -66,6 +67,7 @@ func TestRunnCheckOAPI(t *testing.T) {
 }
 
 func TestRunnN(t *testing.T) {
+	t.Parallel()
 	// run sequential
 	opts := []runn.Option{
 		runn.T(t),
@@ -81,6 +83,7 @@ func TestRunnN(t *testing.T) {
 }
 
 func TestRunnConcurrentN(t *testing.T) {
+	t.Parallel()
 	// run concurrently
 	opts := []runn.Option{
 		runn.T(t),
