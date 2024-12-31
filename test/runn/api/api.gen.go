@@ -11,10 +11,40 @@ import (
 	"github.com/oapi-codegen/runtime"
 )
 
+// Defines values for CreateReportCategory.
+const (
+	Investigation CreateReportCategory = "investigation"
+	Issue         CreateReportCategory = "issue"
+	Research      CreateReportCategory = "research"
+)
+
+// CreateReport defines model for CreateReport.
+type CreateReport struct {
+	Category CreateReportCategory `json:"category"`
+	Content  string               `json:"content"`
+	Title    string               `json:"title"`
+	UserId   string               `json:"user_id"`
+}
+
+// CreateReportCategory defines model for CreateReport.Category.
+type CreateReportCategory string
+
 // CreateUser defines model for CreateUser.
 type CreateUser struct {
 	Name string `json:"name"`
 }
+
+// Report defines model for Report.
+type Report struct {
+	Category string `json:"category"`
+	Content  string `json:"content"`
+	Id       string `json:"id"`
+	Title    string `json:"title"`
+	UserId   string `json:"user_id"`
+}
+
+// Reports defines model for Reports.
+type Reports = []Report
 
 // User defines model for User.
 type User struct {
@@ -25,6 +55,9 @@ type User struct {
 // Users defines model for Users.
 type Users = []User
 
+// CreateReportJSONRequestBody defines body for CreateReport for application/json ContentType.
+type CreateReportJSONRequestBody = CreateReport
+
 // CreateUserJSONRequestBody defines body for CreateUser for application/json ContentType.
 type CreateUserJSONRequestBody = CreateUser
 
@@ -33,6 +66,15 @@ type ServerInterface interface {
 	// get heavy
 	// (GET /v1/heavy)
 	GetHeavy(w http.ResponseWriter, r *http.Request)
+	// get reports
+	// (GET /v1/reports)
+	GetReports(w http.ResponseWriter, r *http.Request)
+	// create report
+	// (POST /v1/reports)
+	CreateReport(w http.ResponseWriter, r *http.Request)
+	// get report by id
+	// (GET /v1/reports/{report_id})
+	GetReportById(w http.ResponseWriter, r *http.Request, reportId string)
 	// get users
 	// (GET /v1/users)
 	GetUsers(w http.ResponseWriter, r *http.Request)
@@ -51,6 +93,24 @@ type Unimplemented struct{}
 // get heavy
 // (GET /v1/heavy)
 func (_ Unimplemented) GetHeavy(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// get reports
+// (GET /v1/reports)
+func (_ Unimplemented) GetReports(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// create report
+// (POST /v1/reports)
+func (_ Unimplemented) CreateReport(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// get report by id
+// (GET /v1/reports/{report_id})
+func (_ Unimplemented) GetReportById(w http.ResponseWriter, r *http.Request, reportId string) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -87,6 +147,62 @@ func (siw *ServerInterfaceWrapper) GetHeavy(w http.ResponseWriter, r *http.Reque
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.GetHeavy(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r.WithContext(ctx))
+}
+
+// GetReports operation middleware
+func (siw *ServerInterfaceWrapper) GetReports(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetReports(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r.WithContext(ctx))
+}
+
+// CreateReport operation middleware
+func (siw *ServerInterfaceWrapper) CreateReport(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateReport(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r.WithContext(ctx))
+}
+
+// GetReportById operation middleware
+func (siw *ServerInterfaceWrapper) GetReportById(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var err error
+
+	// ------------- Path parameter "report_id" -------------
+	var reportId string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "report_id", chi.URLParam(r, "report_id"), &reportId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "report_id", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetReportById(w, r, reportId)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -267,6 +383,15 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 
 	r.Group(func(r chi.Router) {
 		r.Get(options.BaseURL+"/v1/heavy", wrapper.GetHeavy)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/v1/reports", wrapper.GetReports)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/v1/reports", wrapper.CreateReport)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/v1/reports/{report_id}", wrapper.GetReportById)
 	})
 	r.Group(func(r chi.Router) {
 		r.Get(options.BaseURL+"/v1/users", wrapper.GetUsers)
