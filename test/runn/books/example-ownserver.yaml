@@ -17,7 +17,7 @@ steps:
           body: null
     test: |
       current.res.status == 200
-  createUser:
+  createUsers:
     desc: Create a user
     loop: 10
     req:

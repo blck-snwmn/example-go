@@ -3,6 +3,7 @@ package main
 import (
 	"cmp"
 	"encoding/json"
+	"log/slog"
 	"maps"
 	"net/http"
 	"slices"
@@ -42,6 +43,11 @@ func (s *server) CreateUser(w http.ResponseWriter, r *http.Request) {
 
 	id := uuid.Must(uuid.NewV7()).String()
 	store[id] = User{id, u.Name}
+
+	slog.Info("create user",
+		slog.String("id", id),
+		slog.String("name", u.Name),
+	)
 
 	w.WriteHeader(http.StatusCreated)
 }
