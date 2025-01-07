@@ -1,0 +1,21 @@
+desc: Example of calling the Own API
+runners:
+  req: 
+    endpoint: http://localhost:8080
+    openapi3: ../api/openapi.yaml
+    skipValidateRequest: false
+    skipValidateResponse: false
+    trace: true
+vars:
+  request: 
+    name: default_user
+steps:
+  createUser:
+    desc: Create a user
+    req:
+      /v1/users:
+        post:
+          body:
+            application/json: "{{ vars.request }}"
+    test: |
+      current.res.status == 201

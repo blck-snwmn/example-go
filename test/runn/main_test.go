@@ -72,6 +72,7 @@ func TestRunnN(t *testing.T) {
 	opts := []runn.Option{
 		runn.T(t),
 		runn.Runner("req", serverURL),
+		runn.Scopes("read:parent"),
 		runn.Var("username", "user-1"),
 	}
 	o, err := runn.Load("./books/example-o*.yaml", opts...)
@@ -89,6 +90,7 @@ func TestRunnConcurrentN(t *testing.T) {
 	opts := []runn.Option{
 		runn.T(t),
 		runn.Runner("req", serverURL),
+		runn.Scopes("read:parent"),
 		runn.RunConcurrent(true, 10), // 10 is magic number
 	}
 	o, err := runn.Load("./books/example-o*.yaml", opts...)

@@ -7,7 +7,6 @@ runners:
     skipValidateResponse: false
     trace: true
 vars:
-  request: "json://create_user.json.template"
   username: "test"
 steps:
   bindUserName:
@@ -16,20 +15,14 @@ steps:
       user_name: faker.UUID()
   createUser:
     desc: Create a user
-    req:
-      /v1/users:
-        post:
-          body:
-            application/json: "{{ vars.request }}"
-    test: |
-      current.res.status == 201
+    include:
+      path: example-create-user.yaml
+      vars:
+        request: "json://create_user.json.template"
   createUser2:
     desc: Create a user
-    req:
-      /v1/users:
-        post:
-          body:
-            application/json:
-              name: "{{ vars.username }}"
-    test: |
-      current.res.status == 201
+    include:
+      path: example-create-user.yaml
+      vars:
+        request: 
+          name: "{{ vars.username }}"
