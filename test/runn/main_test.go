@@ -72,6 +72,7 @@ func TestRunnN(t *testing.T) {
 	opts := []runn.Option{
 		runn.T(t),
 		runn.Runner("req", serverURL),
+		runn.Var("username", "user-1"),
 	}
 	o, err := runn.Load("./books/example-o*.yaml", opts...)
 	if err != nil {

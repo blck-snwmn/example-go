@@ -6,8 +6,6 @@ runners:
     skipValidateRequest: false
     skipValidateResponse: false
     trace: true
-vars:
-  username: ${USER:-blck-snwmn}
 steps:
   showAllUsers:
     desc: Get the users

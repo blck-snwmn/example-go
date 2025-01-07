@@ -8,6 +8,7 @@ runners:
     trace: true
 vars:
   request: "json://create_user.json.template"
+  username: "test"
 steps:
   bindUserName:
     desc: Bind the username
@@ -20,5 +21,15 @@ steps:
         post:
           body:
             application/json: "{{ vars.request }}"
+    test: |
+      current.res.status == 201
+  createUser2:
+    desc: Create a user
+    req:
+      /v1/users:
+        post:
+          body:
+            application/json:
+              name: "{{ vars.username }}"
     test: |
       current.res.status == 201
