@@ -16,5 +16,6 @@ use (
 	./standard/unique
 	./test/exportexample
 	./test/runn
+	./test/standard
 	./tools/eg
 )
