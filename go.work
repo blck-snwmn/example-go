@@ -1,7 +1,6 @@
 go 1.23.5
 
 use (
-	./db/migration/golang-migrate
 	./db/sqlc
 	./db/sqlx
 	./openapi/oapi-codegen
