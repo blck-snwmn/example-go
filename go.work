@@ -1,6 +1,7 @@
-go 1.23.1
+go 1.23.5
 
 use (
+	./db/migration/golang-migrate
 	./db/sqlc
 	./db/sqlx
 	./openapi/mix
