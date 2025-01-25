@@ -2,15 +2,15 @@
 note: the current directory structure requires the `--scopes read:parent` option.
 
 ```bash
-$ USER=blck-snwmn runn run --scopes read:parent books/example-github.yaml
+$ USER=blck-snwmn go tool runn run --scopes read:parent books/example-github.yaml
 ```
 
 ```bash
-$ runn run --scopes read:parent books/example-ownserver.yaml
+$ go tool runn run --scopes read:parent books/example-ownserver.yaml
 ```
 
 ```bash
-$ runn run --scopes read:parent books/example-o*.yaml --concurrent on
+$ go tool runn run --scopes read:parent books/example-o*.yaml --concurrent on
 ```
 
 ## Test
