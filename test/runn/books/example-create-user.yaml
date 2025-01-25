@@ -1,11 +1,4 @@
 desc: Example of calling the Own API
-runners:
-  req: 
-    endpoint: http://localhost:8080
-    openapi3: ../api/openapi.yaml
-    skipValidateRequest: false
-    skipValidateResponse: false
-    trace: true
 vars:
   request: 
     name: default_user
