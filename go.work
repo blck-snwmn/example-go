@@ -14,6 +14,7 @@ use (
 	./standard/slog
 	./standard/unique
 	./test/exportexample
+	./test/gotestsum
 	./test/runn
 	./test/standard
 	./tools/eg
