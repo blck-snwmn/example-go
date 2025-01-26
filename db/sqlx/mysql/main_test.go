@@ -72,8 +72,6 @@ const insertSQL = `
 `
 
 func Test_Query(t *testing.T) {
-	t.Parallel()
-
 	sqlxDB := helperDB(t)
 
 	_, err := sqlxDB.Exec(insertSQL)
@@ -99,8 +97,6 @@ func Test_Query(t *testing.T) {
 }
 
 func Test_Queryx(t *testing.T) {
-	t.Parallel()
-
 	sqlxDB := helperDB(t)
 
 	_, err := sqlxDB.Exec(insertSQL)
@@ -126,8 +122,6 @@ func Test_Queryx(t *testing.T) {
 }
 
 func Test_Get(t *testing.T) {
-	t.Parallel()
-
 	sqlxDB := helperDB(t)
 
 	_, err := sqlxDB.Exec(insertSQL)
@@ -149,8 +143,6 @@ func Test_Get(t *testing.T) {
 }
 
 func Test_Select(t *testing.T) {
-	t.Parallel()
-
 	sqlxDB := helperDB(t)
 
 	_, err := sqlxDB.Exec(insertSQL)
@@ -216,8 +208,6 @@ func Test_Transaction(t *testing.T) {
 }
 
 func Test_In(t *testing.T) {
-	t.Parallel()
-
 	sqlxDB := helperDB(t)
 
 	_, err := sqlxDB.Exec(insertSQL)
