@@ -26,4 +26,30 @@ jobs:
         run: |
           go test ./... --shuffle on --parallel 10 --p 10
         working-directory: ${{ matrix.directory }}
-
+  parse-go-work:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.extract.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: extract
+        run: |
+          # go.work の use() ブロックから相対パスを抽出
+          DIRS=$(grep '^\s*\.\/' go.work | sed -E 's|^[ \t]*||;s|"||g;s|,||g;s|\)||g')
+          JSON="["
+          for D in $DIRS; do
+            JSON="$JSON\"$D\","
+          done
+          JSON="${JSON%,}]"
+          echo "matrix=$JSON" >> $GITHUB_OUTPUT
+  show:
+    needs: [parse-go-work]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        directory: ${{ fromJson(needs.parse-go-work.outputs.matrix) }}
+    steps:
+      - name: Show
+        run: |
+          ls
+        working-directory: ${{ matrix.directory }}
