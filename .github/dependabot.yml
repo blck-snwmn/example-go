@@ -5,8 +5,25 @@
 
 version: 2
 updates:
-  - package-ecosystem: "gomod" # See documentation for possible values
-    directory: "/"
+  - package-ecosystem: "gomod"
+    directories:
+      - "./db/sqlc"
+      - "./db/sqlx"
+      - "./openapi/oapi-codegen"
+      - "./openapi/ogen"
+      - "./standard/generics"
+      - "./standard/http"
+      - "./standard/http-multimux"
+      - "./standard/iter"
+      - "./standard/iter-db"
+      - "./standard/lang"
+      - "./standard/slog"
+      - "./standard/unique"
+      - "./test/exportexample"
+      - "./test/gotestsum"
+      - "./test/runn"
+      - "./test/standard"
+      - "./tools/eg"
     assignees:
       - blck-snwmn
     schedule:
