@@ -9,11 +9,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
-      - name: Install gotestsum
-        run: go install gotest.tools/gotestsum@latest
       - name: Run tests with gotestsum
         run: |
-          gotestsum --junitfile report.xml --format testdox -- -coverprofile=coverage.out ./...
+          go tool gotestsum --junitfile report.xml --format testdox -- -coverprofile=coverage.out ./...
+        working-directory: test/coverage
       - name: Test Report Summary
         if: success() || failure()
         uses: dorny/test-reporter@v1
