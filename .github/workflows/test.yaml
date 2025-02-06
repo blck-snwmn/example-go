@@ -33,6 +33,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
+        with:
+          cache-dependency-path: ${{ matrix.directory }}
       - name: Run test
         run: |
           go test ./... --shuffle on --parallel 10 --p 10
