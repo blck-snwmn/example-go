@@ -3,7 +3,7 @@ module github.com/blck-snwmn/example-go/openapi/oapi-codegen
 go 1.23.0
 
 require (
-	github.com/go-chi/chi/v5 v5.2.0
+	github.com/go-chi/chi/v5 v5.2.1
 	github.com/oapi-codegen/nullable v1.1.0
 	github.com/oapi-codegen/runtime v1.1.1
 )
