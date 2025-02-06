@@ -12,6 +12,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
+        with:
+          cache-dependency-path: test/coverage
       - name: Run tests with gotestsum
         run: |
           go tool gotestsum --junitfile report.xml --format testdox  --jsonfile tmp.json.log   --post-run-command "bash -c '
