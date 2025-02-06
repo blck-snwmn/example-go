@@ -18,5 +18,5 @@ jobs:
         uses: dorny/test-reporter@v1
         with:
             name: Tests
-            path: "*.xml"
+            path: "test/coverage/*.xml"
             reporter: java-junit
