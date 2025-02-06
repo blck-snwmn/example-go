@@ -14,7 +14,9 @@ jobs:
       - uses: actions/setup-go@v5
       - name: Run tests with gotestsum
         run: |
-          go tool gotestsum --junitfile report.xml --format testdox -- -coverprofile=coverage.out ./...
+          go tool gotestsum --junitfile report.xml --format testdox  --jsonfile tmp.json.log   --post-run-command "bash -c '
+            echo; echo Slowest tests;
+            go tool gotestsum tool slowest --num 10 --jsonfile tmp.json.log'" -- -coverprofile=coverage.out ./...
         working-directory: test/coverage
       - name: Test Report Summary
         if: success() || failure()
