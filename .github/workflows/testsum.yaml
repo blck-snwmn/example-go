@@ -1,0 +1,29 @@
+name: Gotestsum Test & Coverage Summary
+
+on:
+  pull_request:
+permissions:
+  contents: read
+  actions: read
+  checks: write
+jobs:
+  testsum:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          cache-dependency-path: test/coverage
+      - name: Run tests with gotestsum
+        run: |
+          go tool gotestsum --junitfile report.xml --format testdox  --jsonfile tmp.json.log   --post-run-command "bash -c '
+            echo; echo Slowest tests;
+            go tool gotestsum tool slowest --num 10 --jsonfile tmp.json.log'" -- -coverprofile=coverage.out ./...
+        working-directory: test/coverage
+      - name: Test Report Summary
+        if: success() || failure()
+        uses: dorny/test-reporter@v1
+        with:
+            name: Tests
+            path: "test/coverage/*.xml"
+            reporter: java-junit

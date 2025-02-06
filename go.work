@@ -13,6 +13,7 @@ use (
 	./standard/lang
 	./standard/slog
 	./standard/unique
+	./test/coverage
 	./test/exportexample
 	./test/gotestsum
 	./test/runn
