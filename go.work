@@ -1,6 +1,7 @@
 go 1.24rc2
 
 use (
+	./cli/test
 	./db/sqlc
 	./db/sqlx
 	./openapi/oapi-codegen
