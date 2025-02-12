@@ -12,17 +12,17 @@ var svURL string
 func TestMain(m *testing.M) {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/greet", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Hello, World!"))
+		w.Write([]byte("Hello, World!")) //nolint: errcheck
 	})
 	mux.HandleFunc("GET /users", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("All users"))
+		w.Write([]byte("All users")) //nolint: errcheck
 	})
 	mux.HandleFunc("GET /users/{name}", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("User name: "))
-		w.Write([]byte(r.PathValue("name")))
+		w.Write([]byte("User name: "))       //nolint: errcheck
+		w.Write([]byte(r.PathValue("name"))) //nolint: errcheck
 	})
 	mux.HandleFunc("GET /wild/{path...}", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte(r.PathValue("path")))
+		w.Write([]byte(r.PathValue("path"))) //nolint: errcheck
 	})
 	sv := httptest.NewServer(mux)
 	svURL = sv.URL

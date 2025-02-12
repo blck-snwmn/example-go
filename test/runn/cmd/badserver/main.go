@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"slices"
 	"sync"
+	"time"
 
 	"github.com/blck-snwmn/example-go/test/runn/api"
 	"github.com/go-chi/chi/v5"
@@ -97,7 +98,7 @@ func (s *badserver) GetUsers(w http.ResponseWriter, r *http.Request) {
 		})
 	}
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(users)
+	json.NewEncoder(w).Encode(users) //nolint: errcheck
 }
 
 func NewBadServer() api.ServerInterface {
@@ -122,9 +123,10 @@ func main() {
 	h := api.HandlerFromMux(srv, r)
 
 	s := &http.Server{
-		Handler: h,
-		Addr:    "0.0.0.0:8080",
+		Handler:           h,
+		Addr:              "0.0.0.0:8080",
+		ReadHeaderTimeout: 5 * time.Second,
 	}
 
-	s.ListenAndServe()
+	s.ListenAndServe() //nolint: errcheck
 }

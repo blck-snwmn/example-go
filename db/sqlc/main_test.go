@@ -31,7 +31,7 @@ func TestMain(m *testing.M) {
 	if err != nil {
 		log.Fatalf("Could not construct pool: %s", err)
 	}
-	defer mysqlContainer.Terminate(ctx)
+	defer mysqlContainer.Terminate(ctx) //nolint:errcheck
 
 	connStr, err := mysqlContainer.ConnectionString(ctx)
 	if err != nil {

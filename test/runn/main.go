@@ -3,6 +3,7 @@ package main
 import (
 	"log/slog"
 	"net/http"
+	"time"
 
 	"github.com/blck-snwmn/example-go/test/runn/api"
 	"github.com/go-chi/chi/v5"
@@ -26,9 +27,10 @@ func main() {
 	h := api.HandlerFromMux(srv, r)
 
 	s := &http.Server{
-		Handler: h,
-		Addr:    "0.0.0.0:8080",
+		Handler:           h,
+		Addr:              "0.0.0.0:8080",
+		ReadHeaderTimeout: 5 * time.Second,
 	}
 
-	s.ListenAndServe()
+	s.ListenAndServe() //nolint: errcheck
 }

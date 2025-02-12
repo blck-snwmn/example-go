@@ -40,7 +40,7 @@ func testMain(m *testing.M) error {
 	if err != nil {
 		return err
 	}
-	defer postgresContainer.Terminate(ctx)
+	defer postgresContainer.Terminate(ctx) //nolint:errcheck
 
 	connStr, err = postgresContainer.ConnectionString(ctx, "sslmode=disable")
 	if err != nil {

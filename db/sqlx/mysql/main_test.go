@@ -36,7 +36,7 @@ func testMain(m *testing.M) error {
 	if err != nil {
 		return err
 	}
-	defer mysqlContainer.Terminate(ctx)
+	defer mysqlContainer.Terminate(ctx) //nolint:errcheck
 
 	connStr, err := mysqlContainer.ConnectionString(ctx)
 	if err != nil {
@@ -177,7 +177,7 @@ func Test_Transaction(t *testing.T) {
 		_, err = tx.Exec(insertSQL)
 		assert.NoError(t, err)
 
-		tx.Rollback()
+		tx.Rollback() //nolint:errcheck
 
 		var users []User
 		err = sqlxDB.SelectContext(context.Background(), &users, "SELECT * FROM users")

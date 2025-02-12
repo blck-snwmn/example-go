@@ -40,12 +40,16 @@ func (s *server) CreateUser(w http.ResponseWriter, r *http.Request) {
 	if err == nil {
 		age = ptr(tmp)
 	}
-	s.repository.AddUser(user{
+	err = s.repository.AddUser(user{
 		ID:    u.Id,
 		Name:  u.Name,
 		Email: u.Email,
 		Age:   age,
 	})
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 
 	w.WriteHeader(http.StatusCreated)
 }

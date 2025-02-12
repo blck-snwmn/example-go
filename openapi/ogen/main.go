@@ -1,7 +1,9 @@
 package main
 
 import (
+	"log"
 	"net/http"
+	"time"
 
 	"github.com/blck-snwmn/example-go/openapi/ogen/server"
 )
@@ -12,5 +14,11 @@ func main() {
 		panic(err)
 	}
 
-	http.ListenAndServe(":8080", sv)
+	s := &http.Server{
+		Addr:              ":8080",
+		Handler:           sv,
+		ReadHeaderTimeout: 5 * time.Second,
+	}
+	log.Printf("listening on %s", s.Addr)
+	log.Fatal(s.ListenAndServe())
 }

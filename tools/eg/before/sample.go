@@ -6,7 +6,7 @@ import (
 	"golang.org/x/xerrors"
 )
 
-func sample() {
+func sample() { //nolint: unused
 	err := xerrors.New("sample")
 	err = fmt.Errorf("errors: %w", err)
 	fmt.Println(err)

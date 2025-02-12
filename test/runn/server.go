@@ -104,7 +104,7 @@ func (s *server) GetReports(w http.ResponseWriter, r *http.Request) {
 		})
 	}
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(reports)
+	json.NewEncoder(w).Encode(reports) //nolint: errcheck
 }
 
 // GetHeavy implements api.ServerInterface.
@@ -166,7 +166,7 @@ func (s *server) GetUsers(w http.ResponseWriter, r *http.Request) {
 		})
 	}
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(users)
+	json.NewEncoder(w).Encode(users) //nolint: errcheck
 }
 
 func NewServer() api.ServerInterface {
@@ -249,7 +249,7 @@ func (s *badserver) GetUsers(w http.ResponseWriter, r *http.Request) {
 		})
 	}
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(users)
+	json.NewEncoder(w).Encode(users) //nolint: errcheck
 }
 
 func NewBadServer() api.ServerInterface {

@@ -25,12 +25,15 @@ func (s *server) CreateUser(ctx context.Context, req *gen.User) (gen.CreateUserR
 	if v, ok := req.Age.Get(); ok {
 		age = &v
 	}
-	s.repository.AddUser(user{
+	err := s.repository.AddUser(user{
 		ID:    req.ID,
 		Name:  req.Name,
 		Email: req.Email,
 		Age:   age,
 	})
+	if err != nil {
+		return &gen.CreateUserInternalServerError{}, nil
+	}
 	return &gen.CreateUserCreated{}, nil
 }
 

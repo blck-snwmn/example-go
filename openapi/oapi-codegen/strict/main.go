@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/blck-snwmn/example-go/openapi/oapi-codegen/strict/gen"
 	"github.com/blck-snwmn/example-go/openapi/oapi-codegen/strict/server"
@@ -19,8 +20,9 @@ func main() {
 	gen.HandlerFromMux(handler, r)
 
 	sv := &http.Server{
-		Addr:    ":8080",
-		Handler: r,
+		Addr:              ":8080",
+		Handler:           r,
+		ReadHeaderTimeout: 5 * time.Second,
 	}
 	log.Printf("listening on %s", sv.Addr)
 	log.Fatal(sv.ListenAndServe())
