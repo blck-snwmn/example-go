@@ -1,6 +1,6 @@
 module github.com/blck-snwmn/example-go/test/gotestsum
 
-go 1.24rc2
+go 1.24.0
 
 tool gotest.tools/gotestsum
 

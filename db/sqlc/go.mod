@@ -1,6 +1,6 @@
 module github.com/blck-snwmn/example-go/db/sqlc
 
-go 1.23.0
+go 1.24.0
 
 require (
 	github.com/blck-snwmn/playground-go/testcontainers v0.0.0-20240731152322-826445126577

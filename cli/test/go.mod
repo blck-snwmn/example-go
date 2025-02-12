@@ -1,6 +1,6 @@
 module github.com/blck-snwmn/example-go/cli/test
 
-go 1.24rc2
+go 1.24.0
 
 require (
 	github.com/lib/pq v1.10.9
