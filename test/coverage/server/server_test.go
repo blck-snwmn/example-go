@@ -4,12 +4,26 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 )
 
+var url string
+
+func TestMain(m *testing.M) {
+	if os.Getenv("LOCAL") != "" {
+		url = "http://localhost:8080"
+	} else {
+		sv := httptest.NewServer(GenHandler())
+		defer sv.Close()
+
+		url = sv.URL
+	}
+
+	m.Run()
+}
+
 func Test_Server(t *testing.T) {
-	sv := httptest.NewServer(genHandler())
-	defer sv.Close()
 
 	tests := []struct {
 		path   string
@@ -22,7 +36,7 @@ func Test_Server(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		resp, err := sv.Client().Get(sv.URL + tt.path)
+		resp, err := http.Get(url + tt.path)
 		if err != nil {
 			t.Fatal(err)
 		}

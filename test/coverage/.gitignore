@@ -1,3 +1,7 @@
 *.html
 *.out
 *.xml
+coverage.txt
+dir
+!dir/.gitkeep
+main
