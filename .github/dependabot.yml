@@ -22,6 +22,7 @@ updates:
       - "./standard/unique"
       - "./test/coverage"
       - "./test/exportexample"
+      - "./test/ginkgo"
       - "./test/gotestsum"
       - "./test/runn"
       - "./test/standard"
