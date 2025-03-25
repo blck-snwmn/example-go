@@ -58,3 +58,17 @@ jobs:
         run: |
           go tool golangci-lint run --enable=gosec
         working-directory: ${{ matrix.directory }}
+  test-ginkgo:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          cache-dependency-path: test/ginkgo
+      - name: Install ginkgo
+        run: |
+          go install github.com/onsi/ginkgo/v2/ginkgo@latest
+      - name: Run ginkgo test
+        run: |
+          go tool ginkgo -p
+        working-directory: test/ginkgo

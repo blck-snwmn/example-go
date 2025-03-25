@@ -19,7 +19,11 @@ DIRS=$(awk '/use \(/,/\)/{
 # Run go test in each directory
 for dir in $DIRS; do
     echo "Running tests in directory: $dir..."
-    (cd "$REPO_ROOT/$dir" && go test ./...)
+    if [ "$dir" = "./test/ginkgo" ]; then
+        (cd "$REPO_ROOT/$dir" && go tool ginkgo -p)
+    else
+        (cd "$REPO_ROOT/$dir" && go test ./...)
+    fi
     if [ $? -ne 0 ]; then
          echo "Tests failed in $dir."
          exit 1
