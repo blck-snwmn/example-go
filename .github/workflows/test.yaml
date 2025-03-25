@@ -19,7 +19,10 @@ jobs:
           DIRS=$(grep '^\s*\.\/' go.work | sed -E 's|^[ \t]*||;s|"||g;s|,||g;s|\)||g')
           JSON="["
           for D in $DIRS; do
-            JSON="$JSON\"$D\","
+            # Skip test/ginkgo directory
+            if [[ "$D" != "./test/ginkgo" ]]; then
+              JSON="$JSON\"$D\","
+            fi
           done
           JSON="${JSON%,}]"
           echo "matrix=$JSON" >> $GITHUB_OUTPUT
