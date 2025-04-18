@@ -9,15 +9,15 @@ import (
 func main() {
 	submux := http.NewServeMux()
 	submux.HandleFunc("GET /greet", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Hello, World!")) //nolint: errcheck
+		w.Write([]byte("Hello, World!")) //nolint:errcheck,gosec // HTTP response write errors aren't useful
 	})
 	submux.HandleFunc("POST /users", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Create user")) //nolint: errcheck
+		w.Write([]byte("Create user")) //nolint:errcheck,gosec // HTTP response write errors aren't useful
 	})
 
 	mainmux := http.NewServeMux()
 	mainmux.HandleFunc("GET /users", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("All users")) //nolint: errcheck
+		w.Write([]byte("All users")) //nolint:errcheck,gosec // HTTP response write errors aren't useful
 	})
 
 	mainmux.Handle("/", submux)

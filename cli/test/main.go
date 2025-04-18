@@ -59,7 +59,7 @@ func runCommand(args []string) error {
 	if err != nil {
 		return fmt.Errorf("failed to connect to DB: %w", err)
 	}
-	defer db.Close()
+	defer db.Close() //nolint:errcheck // Closing DB connection on defer is standard practice
 
 	// Check connection
 	if err := db.Ping(); err != nil {

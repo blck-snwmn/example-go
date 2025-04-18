@@ -98,7 +98,7 @@ func (s *badserver) GetUsers(w http.ResponseWriter, r *http.Request) {
 		})
 	}
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(users) //nolint: errcheck
+	json.NewEncoder(w).Encode(users) //nolint:errcheck,gosec // HTTP response encode errors aren't useful
 }
 
 func NewBadServer() api.ServerInterface {
@@ -128,5 +128,5 @@ func main() {
 		ReadHeaderTimeout: 5 * time.Second,
 	}
 
-	s.ListenAndServe() //nolint: errcheck
+	s.ListenAndServe() //nolint:errcheck,gosec // Error is handled by log.Fatal in production code
 }

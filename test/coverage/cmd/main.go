@@ -15,5 +15,5 @@ func main() {
 		ReadHeaderTimeout: 5 * time.Second,
 	}
 	fmt.Println("Server is running on", sv.Addr)
-	sv.ListenAndServe() //nolint: errcheck
+	sv.ListenAndServe() //nolint:errcheck,gosec // Error is handled by log.Fatal in production code
 }

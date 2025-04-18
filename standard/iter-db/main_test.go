@@ -47,7 +47,7 @@ func testMain(m *testing.M) error {
 		return err
 	}
 	sqlxdb := sqlx.MustOpen("pgx", connStr)
-	defer sqlxdb.Close()
+	defer sqlxdb.Close() //nolint:errcheck // Closing DB connection on defer is standard practice
 
 	if _, err := sqlxdb.Exec(Schema); err != nil {
 		return err
@@ -85,7 +85,7 @@ func TestSimpleGet(t *testing.T) {
 	ctx := context.Background()
 
 	sqlxdb := sqlx.MustOpen("pgx", connStr)
-	defer sqlxdb.Close()
+	defer sqlxdb.Close() //nolint:errcheck // Closing DB connection on defer is standard practice
 
 	err := sqlxdb.PingContext(ctx)
 	assert.NoError(t, err)
@@ -99,7 +99,7 @@ func TestSimpleGet(t *testing.T) {
 
 func TestIter(t *testing.T) {
 	sqlxdb := sqlx.MustOpen("pgx", connStr)
-	defer sqlxdb.Close()
+	defer sqlxdb.Close() //nolint:errcheck // Closing DB connection on defer is standard practice
 
 	var (
 		dataCount int
@@ -119,7 +119,7 @@ func TestIter(t *testing.T) {
 
 func TestIter_just(t *testing.T) {
 	sqlxdb := sqlx.MustOpen("pgx", connStr)
-	defer sqlxdb.Close()
+	defer sqlxdb.Close() //nolint:errcheck // Closing DB connection on defer is standard practice
 
 	var (
 		dataCount int

@@ -86,7 +86,7 @@ func Test_Query(t *testing.T) {
 	rows, err := sqlxDB.QueryContext(context.Background(), "SELECT * FROM users")
 	assert.NoError(t, err)
 
-	defer rows.Close()
+	defer rows.Close() //nolint:errcheck // Closing rows on defer is standard practice
 
 	var users []User
 	for rows.Next() {
@@ -111,7 +111,7 @@ func Test_Queryx(t *testing.T) {
 	rows, err := sqlxDB.QueryxContext(context.Background(), "SELECT * FROM users")
 	assert.NoError(t, err)
 
-	defer rows.Close()
+	defer rows.Close() //nolint:errcheck // Closing rows on defer is standard practice
 
 	var users []User
 	for rows.Next() {
@@ -178,7 +178,7 @@ func Test_Transaction(t *testing.T) {
 		_, err = tx.Exec(insertSQL)
 		assert.NoError(t, err)
 
-		tx.Rollback() //nolint:errcheck
+		tx.Rollback() //nolint:errcheck,gosec // Rollback errors can be ignored in tests
 
 		var users []User
 		err = sqlxDB.SelectContext(context.Background(), &users, "SELECT * FROM users")
@@ -231,7 +231,7 @@ func helperDB(t *testing.T) *sqlx.DB {
 	sqlxDB := sqlx.MustOpen("txdb", uid)
 
 	t.Cleanup(func() {
-		sqlxDB.Close()
+		sqlxDB.Close() //nolint:errcheck,gosec // Closing DB connection in cleanup
 	})
 
 	return sqlxDB

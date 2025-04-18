@@ -59,7 +59,7 @@ func TestMain(m *testing.M) {
 
 	// set DATABASE_URL environment variable
 	// use this environment variable in the CLI application to connect to the DB
-	os.Setenv("DATABASE_URL", dbURL)
+	os.Setenv("DATABASE_URL", dbURL) //nolint:errcheck,gosec // Test environment setup
 	log.Println("DB connection info:", dbURL)
 
 	// Run migration: create table and insert sample data
@@ -78,7 +78,7 @@ func runMigration(dbURL string) error {
 	if err != nil {
 		return err
 	}
-	defer db.Close()
+	defer db.Close() //nolint:errcheck // Closing DB connection on defer is standard practice
 
 	// Create table sample
 	_, err = db.Exec(`

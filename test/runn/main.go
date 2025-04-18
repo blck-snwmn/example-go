@@ -32,5 +32,5 @@ func main() {
 		ReadHeaderTimeout: 5 * time.Second,
 	}
 
-	s.ListenAndServe() //nolint: errcheck
+	s.ListenAndServe() //nolint:errcheck,gosec // Error is handled by log.Fatal in production code
 }

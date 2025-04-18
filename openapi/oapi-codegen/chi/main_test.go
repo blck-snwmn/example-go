@@ -34,7 +34,7 @@ func Test_GetUsers(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer resp.Body.Close()
+	defer resp.Body.Close() //nolint:errcheck // Closing response body on defer is standard practice
 
 	if resp.StatusCode != 200 {
 		t.Errorf("status code: %d", resp.StatusCode)
@@ -59,7 +59,7 @@ func Test_GetUser(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer resp.Body.Close()
+	defer resp.Body.Close() //nolint:errcheck // Closing response body on defer is standard practice
 
 	if resp.StatusCode != 200 {
 		t.Errorf("status code: %d", resp.StatusCode)
@@ -84,7 +84,7 @@ func Test_GetEmployees_Manager(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer resp.Body.Close()
+	defer resp.Body.Close() //nolint:errcheck // Closing response body on defer is standard practice
 
 	if resp.StatusCode != 200 {
 		t.Errorf("status code: %d", resp.StatusCode)
@@ -109,7 +109,7 @@ func Test_GetEmployees_Member(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer resp.Body.Close()
+	defer resp.Body.Close() //nolint:errcheck // Closing response body on defer is standard practice
 
 	if resp.StatusCode != 200 {
 		t.Errorf("status code: %d", resp.StatusCode)

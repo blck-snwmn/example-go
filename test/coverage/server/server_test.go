@@ -40,7 +40,7 @@ func Test_Server(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		defer resp.Body.Close()
+		defer resp.Body.Close() //nolint:errcheck // Closing response body on defer is standard practice
 
 		if resp.StatusCode != http.StatusOK {
 			t.Errorf("unexpected status code: %d", resp.StatusCode)
