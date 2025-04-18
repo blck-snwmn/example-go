@@ -5,6 +5,9 @@ on:
     branches:
       - main
   pull_request:
+    
+env:
+  GO_VERSION: stable
 
 jobs:
   parse-go-work:
@@ -13,19 +16,11 @@ jobs:
       matrix: ${{ steps.extract.outputs.matrix }}
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
       - id: extract
-        run: |
-          # Extracting the relative path from the use() block of go.work
-          DIRS=$(grep '^\s*\.\/' go.work | sed -E 's|^[ \t]*||;s|"||g;s|,||g;s|\)||g')
-          JSON="["
-          for D in $DIRS; do
-            # Skip test/ginkgo directory
-            if [[ "$D" != "./test/ginkgo" ]]; then
-              JSON="$JSON\"$D\","
-            fi
-          done
-          JSON="${JSON%,}]"
-          echo "matrix=$JSON" >> $GITHUB_OUTPUT
+        run: echo "matrix=$(go list -m -json | jq -s '.' | jq -c '[.[].Dir]')" >> $GITHUB_OUTPUT
   test:
     runs-on: ubuntu-latest
     needs: [parse-go-work]
