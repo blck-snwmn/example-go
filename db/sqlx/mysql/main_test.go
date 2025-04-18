@@ -28,7 +28,7 @@ func testMain(m *testing.M) error {
 
 	mysqlContainer, err := mysql.Run(
 		ctx,
-		"mysql:5.7",
+		"mysql:8.0",
 		testcontainers.WithEnv(map[string]string{
 			"MYSQL_ROOT": "secret",
 		}),
