@@ -49,10 +49,10 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           cache-dependency-path: ${{ matrix.directory }}
-      - name: Run test
-        run: |
-          go tool golangci-lint run --enable=gosec
-        working-directory: ${{ matrix.directory }}
+      - name: golangci-lint 
+        uses: golangci/golangci-lint-action@v7
+        with:
+          working-directory: ${{ matrix.directory }}
   test-ginkgo:
     runs-on: ubuntu-latest
     steps:
