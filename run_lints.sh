@@ -3,10 +3,10 @@
 # Get the repository root directory
 REPO_ROOT=$(git rev-parse --show-toplevel)
 
-echo "Extracting module directories using go list..."
+echo "Finding directories with go.mod files..."
 
-# Extract module directories using go list
-DIRS=$(go list -m -json | jq -s '.' | jq -c '.[].Dir' | tr -d '"')
+# Extract directories containing go.mod files using find
+DIRS=$(find . -name "go.mod" -exec dirname {} \;)
 
 # Initialize failure flag
 FAILED=0
