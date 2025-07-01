@@ -4,4 +4,4 @@ go 1.23.8
 
 toolchain go1.24.2
 
-require golang.org/x/text v0.24.0
+require golang.org/x/text v0.26.0
