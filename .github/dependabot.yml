@@ -10,6 +10,7 @@ updates:
       - "./cli/test"
       - "./db/sqlc"
       - "./db/sqlx"
+      - ./di/dig
       - ./di/wire
       - "./openapi/oapi-codegen"
       - "./openapi/ogen"
