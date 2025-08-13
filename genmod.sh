@@ -25,33 +25,22 @@ GITHUB_PATH=$(echo $CURRENT_PATH | sed -n 's/.*\(github\.com.*\)/\1/p')
 # Execute go mod init command
 go mod init $GITHUB_PATH
 go get --tool github.com/golangci/golangci-lint/cmd/golangci-lint@v1.62.2
-go work use .
 
-# Obtain repository root and file paths
+# Add new directory to dependabot.yml using yq
 REPO_ROOT=$(git rev-parse --show-toplevel)
-WORK_FILE="$REPO_ROOT/go.work"
 DEPENDABOT_FILE="$REPO_ROOT/.github/dependabot.yml"
+NEW_DIR="./$DIR_NAME"
 
-# Get the latest list of directories from the use() block in go.work
-NEW_DIRS=$(awk '/use \(/,/\)/{
-    if ($1 ~ /^\.\//) print $1
-}' "$WORK_FILE" | sed 's/^/      - "/; s/$/"/')
-
-# Update the directories list in the gomod block of dependabot.yml
-awk -v new_dirs="$NEW_DIRS" '
-    BEGIN { inGomod=0; inDirs=0 }
-    /- package-ecosystem: "gomod"/ { inGomod=1 }
-    {
-      if(inGomod && $0 ~ /^[[:space:]]*directories:/) {
-         print "    directories:";
-         print new_dirs;
-         inDirs=1;
-         inGomod=0; next
-      }
-      if(inDirs && $0 ~ /^[[:space:]]*[^-[:space:]]/) { inDirs=0 }
-      if(!inDirs) { print }
-    }
-' "$DEPENDABOT_FILE" > "$DEPENDABOT_FILE.tmp" && mv "$DEPENDABOT_FILE.tmp" "$DEPENDABOT_FILE"
+# Check if the directory is already in dependabot.yml
+if ! yq eval '.updates[0].directories[] | select(. == "'$NEW_DIR'")' "$DEPENDABOT_FILE" | grep -q "$NEW_DIR"; then
+    # Add the new directory to the gomod package-ecosystem directories array
+    yq eval '.updates[0].directories += ["'$NEW_DIR'"]' -i "$DEPENDABOT_FILE"
+    # Sort the directories array to maintain order
+    yq eval '.updates[0].directories |= sort' -i "$DEPENDABOT_FILE"
+    echo "Added $DIR_NAME to dependabot.yml"
+else
+    echo "$DIR_NAME already exists in dependabot.yml"
+fi
 
 # Return to the original working directory
 cd "$ORIG_DIR"
