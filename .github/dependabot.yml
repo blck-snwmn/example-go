@@ -11,6 +11,7 @@ updates:
       - "./db/sqlc"
       - "./db/sqlx"
       - ./di/dig
+      - ./di/do
       - ./di/wire
       - "./openapi/oapi-codegen"
       - "./openapi/ogen"
