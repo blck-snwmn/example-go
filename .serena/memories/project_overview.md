@@ -19,10 +19,10 @@ example-goは、Goプログラミング言語の様々な機能や技術を実�
 - **OpenAPI**: ogen、oapi-codegen
 - **データベース**: PostgreSQL、MySQL（sqlx、sqlc使用）
 - **リンター**: golangci-lint（gosec含む）
-- **依存関係管理**: Go modules、go.work
+- **依存関係管理**: Go modules
 
 ## プロジェクト構造
-プロジェクトは複数のGo modulesから構成されており、各ディレクトリが独立したmoduleとして動作します：
+プロジェクトは複数の独立したGo modulesから構成されており、各ディレクトリが独立したmoduleとして動作します：
 
 - `standard/`: 標準ライブラリの使用例
 - `test/`: テスト手法の実例

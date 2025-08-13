@@ -25,7 +25,7 @@ cd <directory> && golangci-lint run --enable=gosec
 
 ### 新しいモジュール作成
 ```bash
-# 新しいGo moduleを作成し、go.workとdependabot.ymlを自動更新
+# 新しいGo moduleを作成し、dependabot.ymlを自動更新
 ./genmod.sh <directory_name>
 ```
 
@@ -36,9 +36,6 @@ go mod tidy
 
 # モジュールの初期化
 go mod init <module_path>
-
-# ワークスペースに追加
-go work use .
 
 # ビルド
 go build ./...
