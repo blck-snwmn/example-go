@@ -15,7 +15,7 @@ jobs:
     outputs:
       matrix: ${{ steps.extract.outputs.matrix }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/setup-go@v5
         with:
           go-version: ${{ env.GO_VERSION }}
@@ -29,7 +29,7 @@ jobs:
       matrix:
         directory: ${{ fromJson(needs.parse-go-work.outputs.matrix) }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/setup-go@v5
         with:
           cache-dependency-path: ${{ matrix.directory }}
@@ -45,18 +45,18 @@ jobs:
       matrix:
         directory: ${{ fromJson(needs.parse-go-work.outputs.matrix) }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/setup-go@v5
         with:
           cache-dependency-path: ${{ matrix.directory }}
       - name: golangci-lint 
-        uses: golangci/golangci-lint-action@v7
+        uses: golangci/golangci-lint-action@v8
         with:
           working-directory: ${{ matrix.directory }}
   test-ginkgo:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/setup-go@v5
         with:
           cache-dependency-path: test/ginkgo
