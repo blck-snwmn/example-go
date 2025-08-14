@@ -16,11 +16,11 @@ cd test/ginkgo && go tool ginkgo -p
 
 ### リント実行
 ```bash
-# 全ディレクトリでリント実行
+# 全ディレクトリでリント実行（自動検出：ホストにgolangci-lintがあれば使用、なければgo run）
 ./run_lints.sh
 
-# 特定のディレクトリでリント実行
-cd <directory> && golangci-lint run --enable=gosec
+# 特定のディレクトリでリント実行（go run経由）
+cd <directory> && go run github.com/golangci/golangci-lint/cmd/golangci-lint@v1.62.2 run --enable=gosec
 ```
 
 ### 新しいモジュール作成

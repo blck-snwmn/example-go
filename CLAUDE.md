@@ -38,11 +38,13 @@ cd test/ginkgo && go tool ginkgo -p
 
 ### Linting
 ```bash
-# Run linting across all modules
+# Run linting across all modules (auto-detects golangci-lint in PATH)
 ./run_lints.sh
+# If golangci-lint is installed: uses host command
+# If not installed: uses go run github.com/golangci/golangci-lint/cmd/golangci-lint@v1.62.2
 
 # Run linting in specific module
-cd <module_directory> && golangci-lint run --enable=gosec
+cd <module_directory> && go run github.com/golangci/golangci-lint/cmd/golangci-lint@v1.62.2 run --enable=gosec
 ```
 
 ### Basic Development
@@ -62,7 +64,6 @@ go build ./...
 1. **Adding new examples**: Use `./genmod.sh <name>` to create a new module, which automatically:
    - Creates the directory and initializes go.mod
    - Updates .github/dependabot.yml to include the new module
-   - Installs golangci-lint as a tool dependency
 
 2. **Testing strategy**: The project uses different testing approaches:
    - Standard Go testing for basic unit tests
@@ -76,11 +77,11 @@ go build ./...
 
 - **OpenAPI**: Two approaches available - ogen (newer, more performant) and oapi-codegen (more mature)
 - **Database**: sqlx for manual SQL, sqlc for code generation from SQL
-- **Linting**: golangci-lint with gosec security checking enabled
+- **Linting**: golangci-lint v1.62.2 with gosec security checking enabled (executed via go run)
 
 ## Important Notes
 
-- All modules must have golangci-lint installed as a tool dependency
+- golangci-lint is centrally managed and executed via `go run` (no per-module tool dependency)
 - The repository root scripts handle cross-module operations automatically
 - Each module can have different dependency versions as needed
 - Ginkgo tests require special handling with `go tool ginkgo` command

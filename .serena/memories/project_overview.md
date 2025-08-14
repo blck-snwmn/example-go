@@ -18,7 +18,7 @@ example-goは、Goプログラミング言語の様々な機能や技術を実�
   - Ginkgo
 - **OpenAPI**: ogen、oapi-codegen
 - **データベース**: PostgreSQL、MySQL（sqlx、sqlc使用）
-- **リンター**: golangci-lint（gosec含む）
+- **リンター**: golangci-lint v1.62.2（go run経由で実行、ホストにインストール済みなら自動検出）
 - **依存関係管理**: Go modules
 
 ## プロジェクト構造

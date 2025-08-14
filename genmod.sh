@@ -24,7 +24,6 @@ GITHUB_PATH=$(echo $CURRENT_PATH | sed -n 's/.*\(github\.com.*\)/\1/p')
 
 # Execute go mod init command
 go mod init $GITHUB_PATH
-go get --tool github.com/golangci/golangci-lint/cmd/golangci-lint@v1.62.2
 
 # Add new directory to dependabot.yml using yq
 REPO_ROOT=$(git rev-parse --show-toplevel)
