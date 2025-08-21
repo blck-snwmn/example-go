@@ -5,7 +5,7 @@ go 1.24.0
 tool github.com/onsi/ginkgo/v2/ginkgo
 
 require (
-	github.com/onsi/ginkgo/v2 v2.24.0
+	github.com/onsi/ginkgo/v2 v2.25.0
 	github.com/onsi/gomega v1.38.0
 )
 
