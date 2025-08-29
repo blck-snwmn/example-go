@@ -13,8 +13,8 @@ jobs:
   testsum:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-go@v5
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - uses: actions/setup-go@d35c59abb061a4a6fb18e82ac0862c26744d6ab5 # v5
         with:
           cache-dependency-path: test/coverage
       - name: Run tests with gotestsum
@@ -25,7 +25,7 @@ jobs:
         working-directory: test/coverage
       - name: Test Report Summary
         if: success() || failure()
-        uses: dorny/test-reporter@v2
+        uses: dorny/test-reporter@dc3a92680fcc15842eef52e8c4606ea7ce6bd3f3 # v2
         with:
             name: Tests
             path: "test/coverage/*.xml"
