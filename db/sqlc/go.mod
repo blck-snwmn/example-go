@@ -3,7 +3,7 @@ module github.com/blck-snwmn/example-go/db/sqlc
 go 1.24.0
 
 require (
-	github.com/blck-snwmn/playground-go/testcontainers v0.0.0-20240731152322-826445126577
+	github.com/blck-snwmn/playground-go/testcontainers v0.0.0-20250813143948-445f97ee899c
 	github.com/google/uuid v1.6.0
 	github.com/stretchr/testify v1.10.0
 	github.com/testcontainers/testcontainers-go v0.38.0

@@ -8,8 +8,8 @@ github.com/Azure/go-ansiterm v0.0.0-20230124172434-306776ec8161 h1:L/gRVlceqvL25
 github.com/Azure/go-ansiterm v0.0.0-20230124172434-306776ec8161/go.mod h1:xomTg63KZ2rFqZQzSB4Vz2SUXa1BpHTVz9L5PTmPC4E=
 github.com/Microsoft/go-winio v0.6.2 h1:F2VQgta7ecxGYO8k3ZZz3RS8fVIXVxONVUPlNERoyfY=
 github.com/Microsoft/go-winio v0.6.2/go.mod h1:yd8OoFMLzJbo9gZq8j5qaps8bJ9aShtEA8Ipt1oGCvU=
-github.com/blck-snwmn/playground-go/testcontainers v0.0.0-20240731152322-826445126577 h1:ZkFRPqRMkRYPIy64O3z14tc/y0DtFsfo7ZClYBAk+lc=
-github.com/blck-snwmn/playground-go/testcontainers v0.0.0-20240731152322-826445126577/go.mod h1:s84BeThFQR2H5rCOlDlmItavJJZJtd380rDGcu4E5Xs=
+github.com/blck-snwmn/playground-go/testcontainers v0.0.0-20250813143948-445f97ee899c h1:M/8d7tA6rowcuTJnr+yjm/44BYp5tIRvZ5gpfYhzvmM=
+github.com/blck-snwmn/playground-go/testcontainers v0.0.0-20250813143948-445f97ee899c/go.mod h1:s84BeThFQR2H5rCOlDlmItavJJZJtd380rDGcu4E5Xs=
 github.com/cenkalti/backoff/v4 v4.3.0 h1:MyRJ/UdXutAwSAT+s3wNd7MfTIcy71VQueUuFK343L8=
 github.com/cenkalti/backoff/v4 v4.3.0/go.mod h1:Y3VNntkOUPxTVeUxJ/G5vcM//AlwfmyYozVcomhLiZE=
 github.com/containerd/errdefs v1.0.0 h1:tg5yIfIlQIrxYtu9ajqY42W3lpS19XqdxRQeEwYG8PI=
