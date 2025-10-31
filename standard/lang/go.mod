@@ -1,7 +1,7 @@
 module github.com/blck-snwmn/example-go/standard/lang
 
-go 1.23.8
+go 1.24.0
 
 toolchain go1.25.2
 
-require golang.org/x/text v0.28.0
+require golang.org/x/text v0.30.0
