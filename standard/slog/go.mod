@@ -2,4 +2,4 @@ module github.com/blck-snwmn/example-go/standard/slog
 
 go 1.23.8
 
-toolchain go1.25.2
+toolchain go1.25.3
