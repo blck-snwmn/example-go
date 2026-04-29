@@ -25,7 +25,7 @@ jobs:
         working-directory: test/coverage
       - name: Test Report Summary
         if: success() || failure()
-        uses: dorny/test-reporter@dc3a92680fcc15842eef52e8c4606ea7ce6bd3f3 # v2
+        uses: dorny/test-reporter@df6247429542221bc30d46a036ee47af1102c451 # v2
         with:
             name: Tests
             path: "test/coverage/*.xml"
