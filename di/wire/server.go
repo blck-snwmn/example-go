@@ -12,17 +12,19 @@ type Server struct {
 
 func (s *Server) Start() error {
 	fmt.Printf("Starting server on port %s\n", s.port)
-	
+
 	http.HandleFunc("/users", func(w http.ResponseWriter, r *http.Request) {
 		users, err := s.userService.ListUsers()
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		
-		fmt.Fprintf(w, "Users: %v\n", users)
+
+		if _, err := fmt.Fprintf(w, "Users: %v\n", users); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
 	})
-	
+
 	return http.ListenAndServe(":"+string(s.port), nil)
 }
 

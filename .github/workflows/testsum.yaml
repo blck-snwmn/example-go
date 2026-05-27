@@ -3,18 +3,22 @@ name: Gotestsum Test & Coverage Summary
 on:
   push:
     branches:
-        - main
+      - main
   pull_request:
+
 permissions:
   contents: read
   actions: read
   checks: write
+
 jobs:
   testsum:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
-      - uses: actions/setup-go@44694675825211faa026b3c33043df3e48a5fa00 # v6
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@44694675825211faa026b3c33043df3e48a5fa00 # v6.0.0
         with:
           cache-dependency-path: test/coverage
       - name: Run tests with gotestsum
@@ -25,8 +29,8 @@ jobs:
         working-directory: test/coverage
       - name: Test Report Summary
         if: success() || failure()
-        uses: dorny/test-reporter@dc3a92680fcc15842eef52e8c4606ea7ce6bd3f3 # v2
+        uses: dorny/test-reporter@dc3a92680fcc15842eef52e8c4606ea7ce6bd3f3 # v2.1.1
         with:
-            name: Tests
-            path: "test/coverage/*.xml"
-            reporter: java-junit
+          name: Tests
+          path: "test/coverage/*.xml"
+          reporter: java-junit
