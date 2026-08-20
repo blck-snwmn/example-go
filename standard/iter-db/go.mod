@@ -2,7 +2,7 @@ module github.com/blck-snwmn/example-go/standard/iter-db
 
 go 1.25.0
 
-toolchain go1.26.5
+toolchain go1.26.6
 
 require (
 	github.com/google/uuid v1.6.0
