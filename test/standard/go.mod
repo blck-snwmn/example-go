@@ -1,5 +1,3 @@
 module github.com/blck-snwmn/example-go/test/standard
 
-go 1.23.8
-
-toolchain go1.24.2
+go 1.27.0
