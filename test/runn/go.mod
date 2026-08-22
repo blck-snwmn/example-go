@@ -1,6 +1,6 @@
 module github.com/blck-snwmn/example-go/test/runn
 
-go 1.24.6
+go 1.27.0
 
 require (
 	github.com/go-chi/chi/v5 v5.2.2

@@ -1,6 +1,6 @@
 module github.com/blck-snwmn/example-go/openapi/ogen
 
-go 1.25.0
+go 1.27.0
 
 require (
 	github.com/go-faster/errors v0.8.0

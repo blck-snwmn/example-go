@@ -1,6 +1,6 @@
 module github.com/blck-snwmn/example-go/db/sqlx
 
-go 1.25.0
+go 1.27.0
 
 require (
 	github.com/DATA-DOG/go-txdb v0.2.1
