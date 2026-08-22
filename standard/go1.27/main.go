@@ -1,10 +1,12 @@
 package main
 
 import (
+	"encoding/json/v2"
 	"fmt"
 	"iter"
 	"slices"
 	"strings"
+	"uuid"
 )
 
 func main() {
@@ -33,6 +35,22 @@ func main() {
 		Identity: identity,
 	}
 	fmt.Println(functions.Identity(27))
+
+	encoded, err := json.Marshal(Person{Name: "Alice"})
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(string(encoded))
+
+	// encoding/json/v2 rejects duplicate object names by default.
+	var person Person
+	err = json.Unmarshal([]byte(`{"name":"Alice","name":"Bob"}`), &person)
+	fmt.Printf("duplicate JSON name rejected: %v\n", err != nil)
+
+	// The standard uuid package generates and parses UUIDs.
+	id := uuid.NewV7()
+	parsed, err := uuid.Parse(id.String())
+	fmt.Printf("UUID v7: %s (round trip: %v)\n", id, err == nil && parsed == id)
 }
 
 // Seq is a lazy sequence that passes values of type T to a consumer.
@@ -111,4 +129,9 @@ type Functions struct {
 // identity returns value unchanged.
 func identity[T any](value T) T {
 	return value
+}
+
+// Person is encoded and decoded with encoding/json/v2.
+type Person struct {
+	Name string `json:"name"`
 }
