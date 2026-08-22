@@ -7,6 +7,9 @@ This directory contains various sample code using the Go standard library.
 ### [generics](generics/)
 Examples of generics usage introduced in Go 1.18.
 
+### [go1.27](go1.27/)
+Examples of language features introduced in Go 1.27.
+
 ### [http](http/)
 Sample web server using the standard HTTP library.
 
