@@ -64,7 +64,7 @@ func (s *Server) handleCreateUser(w http.ResponseWriter, r *http.Request) {
 func (s *Server) Start(port string) error {
 	http.HandleFunc("/users", s.handleUsers)
 	fmt.Printf("Server starting on port %s\n", port)
-	
+
 	server := &http.Server{
 		Addr:         ":" + port,
 		Handler:      nil,
@@ -72,7 +72,7 @@ func (s *Server) Start(port string) error {
 		WriteTimeout: 15 * time.Second,
 		IdleTimeout:  60 * time.Second,
 	}
-	
+
 	return server.ListenAndServe()
 }
 

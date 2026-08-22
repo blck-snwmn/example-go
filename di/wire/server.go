@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"time"
 )
 
 type Server struct {
@@ -25,7 +26,11 @@ func (s *Server) Start() error {
 		}
 	})
 
-	return http.ListenAndServe(":"+string(s.port), nil)
+	server := &http.Server{
+		Addr:              ":" + string(s.port),
+		ReadHeaderTimeout: 5 * time.Second,
+	}
+	return server.ListenAndServe()
 }
 
 func NewServer(userService UserService, port Port) *Server {

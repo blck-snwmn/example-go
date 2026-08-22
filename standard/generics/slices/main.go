@@ -6,6 +6,8 @@ import (
 )
 
 func randSlice[T any](slice []T) T {
+	// This example only randomizes display order; cryptographic randomness is unnecessary.
+	//nolint:gosec
 	rand.Shuffle(len(slice), func(i, j int) {
 		slice[i], slice[j] = slice[j], slice[i]
 	})
