@@ -2,8 +2,9 @@
 
 Small examples of language features introduced in Go 1.27:
 
-- generic methods, demonstrated by a functional-style `List[T]` with `Fold`
-  and the `Map`, `Filter`, and `FlatMap` operations built from it
+- generic methods, demonstrated by a lazy, functional-style `Seq[T]` with
+  `Map`, `Filter`, and `FlatMap`
+- terminal sequence operations demonstrated by `Fold` and `Collect`
 - nested field selectors in struct literals
 - generic function type inference from an assignment context
 
