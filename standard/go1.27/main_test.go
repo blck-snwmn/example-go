@@ -170,7 +170,9 @@ func TestNewTestServerWithSynctest(t *testing.T) {
 		// the client and server are waiting on each other.
 		server := httptest.NewTestServer(t, http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 			time.Sleep(delay)
-			fmt.Fprint(w, "done")
+			if _, err := fmt.Fprint(w, "done"); err != nil {
+				t.Errorf("Fprint() error = %v", err)
+			}
 		}))
 
 		started := time.Now()
@@ -178,7 +180,11 @@ func TestNewTestServerWithSynctest(t *testing.T) {
 		if err != nil {
 			t.Fatalf("Get() error = %v", err)
 		}
-		defer response.Body.Close()
+		defer func() {
+			if err := response.Body.Close(); err != nil {
+				t.Errorf("response body Close() error = %v", err)
+			}
+		}()
 
 		body, err := io.ReadAll(response.Body)
 		if err != nil {
