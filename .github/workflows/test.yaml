@@ -14,6 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.extract.outputs.matrix }}
+      lint_matrix: ${{ steps.extract.outputs.lint_matrix }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -23,6 +24,8 @@ jobs:
           {
             echo -n "matrix="
             find . -name "go.mod" -exec dirname {} \; | grep -v "/test/ginkgo" | jq -c -R -s 'split("\n") | map(select(length > 0))'
+            echo -n "lint_matrix="
+            find . -name "go.mod" -exec dirname {} \; | jq -c -R -s 'split("\n") | map(select(length > 0))'
           } >> "$GITHUB_OUTPUT"
 
   test:
@@ -51,7 +54,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        directory: ${{ fromJson(needs.parse-go-work.outputs.matrix) }}
+        directory: ${{ fromJson(needs.parse-go-work.outputs.lint_matrix) }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -60,10 +63,13 @@ jobs:
         with:
           go-version-file: ${{ matrix.directory }}/go.mod
           cache-dependency-path: ${{ matrix.directory }}
-      - name: golangci-lint
-        uses: golangci/golangci-lint-action@ba0d7d2ec06a0ea1cb5fa41b2e4a3ab91d21278a # v9.3.0
+      - name: Install aqua tools
+        uses: aquaproj/aqua-installer@96a9bc20066c5bf5e275b41019cfc165b25f4e2e # v4.0.5
         with:
-          working-directory: ${{ matrix.directory }}
+          aqua_version: v2.62.3
+      - name: golangci-lint
+        run: golangci-lint run
+        working-directory: ${{ matrix.directory }}
 
   test-ginkgo:
     runs-on: ubuntu-latest

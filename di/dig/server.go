@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 )
 
 type Server struct {
@@ -63,7 +64,11 @@ func (s *Server) handleCreateUser(w http.ResponseWriter, r *http.Request) {
 func (s *Server) Start(port string) error {
 	http.HandleFunc("/users", s.handleUsers)
 	fmt.Printf("Server starting on port %s\n", port)
-	return http.ListenAndServe(":"+port, nil)
+	server := &http.Server{
+		Addr:              ":" + port,
+		ReadHeaderTimeout: 5 * time.Second,
+	}
+	return server.ListenAndServe()
 }
 
 func (s *Server) Routes() {

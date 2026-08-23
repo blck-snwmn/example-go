@@ -38,13 +38,14 @@ cd test/ginkgo && go tool ginkgo -p
 
 ### Linting
 ```bash
-# Run linting across all modules (auto-detects golangci-lint in PATH)
+# Install the pinned development tools
+aqua install
+
+# Run linting and formatter checks across all modules
 ./run_lints.sh
-# If golangci-lint is installed: uses host command
-# If not installed: uses go run github.com/golangci/golangci-lint/cmd/golangci-lint@v1.62.2
 
 # Run linting in specific module
-cd <module_directory> && go run github.com/golangci/golangci-lint/cmd/golangci-lint@v1.62.2 run --enable=gosec
+cd <module_directory> && golangci-lint run
 ```
 
 ### Basic Development
@@ -77,11 +78,11 @@ go build ./...
 
 - **OpenAPI**: Two approaches available - ogen (newer, more performant) and oapi-codegen (more mature)
 - **Database**: sqlx for manual SQL, sqlc for code generation from SQL
-- **Linting**: golangci-lint v1.62.2 with gosec security checking enabled (executed via go run)
+- **Linting**: aqua-managed golangci-lint v2 with gosec, gofmt, and goimports checks enabled
 
 ## Important Notes
 
-- golangci-lint is centrally managed and executed via `go run` (no per-module tool dependency)
+- golangci-lint is centrally managed by aqua (no per-module tool dependency)
 - The repository root scripts handle cross-module operations automatically
 - Each module can have different dependency versions as needed
 - Ginkgo tests require special handling with `go tool ginkgo` command
