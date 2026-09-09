@@ -4,7 +4,7 @@ go 1.27.0
 
 require (
 	github.com/blck-snwmn/playground-go/testcontainers v0.0.0-20260524104619-79978f846205
-	github.com/go-sql-driver/mysql v1.10.0
+	github.com/go-sql-driver/mysql v1.10.1
 	github.com/google/uuid v1.6.0
 	github.com/stretchr/testify v1.12.1
 	github.com/testcontainers/testcontainers-go v0.44.0
