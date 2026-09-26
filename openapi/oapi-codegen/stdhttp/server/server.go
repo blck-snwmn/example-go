@@ -8,10 +8,6 @@ import (
 	"github.com/oapi-codegen/nullable"
 )
 
-func ptr[T any](v T) *T {
-	return &v
-}
-
 func NewServer(repository *UserRepository) gen.ServerInterface {
 	return &server{
 		repository: repository,
@@ -38,7 +34,7 @@ func (s *server) CreateUser(w http.ResponseWriter, r *http.Request) {
 	var age *int32
 	tmp, err := u.Age.Get()
 	if err == nil {
-		age = ptr(tmp)
+		age = new(tmp)
 	}
 	err = s.repository.AddUser(user{
 		ID:    u.Id,

@@ -35,7 +35,7 @@ func main() {
 	odd := filter(numbers, func(i int) bool { return i%2 == 1 })
 	repeatByOdd := flatMap(odd, func(i int) iter.Seq[int] {
 		return func(yield func(int) bool) {
-			for j := 0; j < i; j++ {
+			for j := range i {
 				if !yield(j * i) {
 					return
 				}

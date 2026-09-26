@@ -11,10 +11,6 @@ import (
 	"github.com/oapi-codegen/nullable"
 )
 
-func ptr[T any](v T) *T {
-	return &v
-}
-
 type user struct {
 	ID    string
 	Name  string
@@ -23,9 +19,9 @@ type user struct {
 }
 
 var users = map[string]user{
-	"1": {ID: "1", Name: "Alice", Email: "alice@example.com", Age: ptr[int32](30)},
-	"2": {ID: "2", Name: "Bob", Email: "bob@example.com", Age: ptr[int32](40)},
-	"3": {ID: "3", Name: "Charlie", Email: "charlie@example.com", Age: ptr[int32](50)},
+	"1": {ID: "1", Name: "Alice", Email: "alice@example.com", Age: new(int32(30))},
+	"2": {ID: "2", Name: "Bob", Email: "bob@example.com", Age: new(int32(40))},
+	"3": {ID: "3", Name: "Charlie", Email: "charlie@example.com", Age: new(int32(50))},
 }
 
 func NewServer() gen.ServerInterface {
