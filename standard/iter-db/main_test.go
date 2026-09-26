@@ -56,7 +56,7 @@ func testMain(m *testing.M) error {
 	users := []User{
 		{ID: "1", Name: "Alice", Bio: "Lorem ipsum"},
 	}
-	for i := 0; i < 100; i++ {
+	for range 100 {
 
 		users = append(users, User{
 			ID:   uuid.Must(uuid.NewV7()).String(),
